@@ -30,5 +30,6 @@ module.exports = withTM({
     // AUTH0
     AUTH0_CLIENT_ID: '',
     AUTH0_DOMAIN: '',
+    API_URL: 'https://13.79.156.47:8002',
   },
 });

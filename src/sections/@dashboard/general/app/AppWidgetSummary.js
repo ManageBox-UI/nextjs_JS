@@ -32,7 +32,7 @@ AppWidgetSummary.propTypes = {
   sx: PropTypes.object,
 };
 
-export default function AppWidgetSummary({ title, percent, total, chartColor, chartData, sx, ...other }) {
+export default function AppWidgetSummary({ title, percent, total, chartColor,subheader, chartData, sx, ...other }) {
   const theme = useTheme();
 
   const chartOptions = {
@@ -74,6 +74,7 @@ export default function AppWidgetSummary({ title, percent, total, chartColor, ch
         </Stack>
 
         <Typography variant="h3">{fNumber(total)}</Typography>
+        <Typography variant="subtitle1">{<h6>{subheader}</h6>}</Typography>
       </Box>
 
       <ReactApexChart type="bar" series={[{ data: chartData }]} options={chartOptions} width={60} height={36} />

@@ -1,7 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Container, Grid, Stack, Button, Map } from '@mui/material';
-// hooks
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 // layouts
@@ -23,11 +22,23 @@ import {
   AppCurrentDownload,
   AppTopInstalledCountries,
 } from '../../sections/@dashboard/general/app';
+import {
+  BookingDetails,
+  BookingBookedRoom,
+  BookingTotalIncomes,
+  BookingRoomAvailable,
+  BookingNewestBooking,
+  BookingWidgetSummary,
+  BookingCheckInWidgets,
+  BookingCustomerReviews,
+  BookingReservationStats,
+} from '../../sections/@dashboard/general/booking';
 // assets
 import { SeoIllustration } from '../../assets';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr'
+import useSWR from 'swr';
+import { from } from 'stylis';
 
 // ----------------------------------------------------------------------
 
@@ -41,73 +52,115 @@ export default function GeneralApp() {
   const { user } = useAuth();
   const theme = useTheme();
   const { themeStretch } = useSettings();
-  const [chartDatas, setChartDatas] = useState();
-  const [widgets, setWidgets] = useState();
-  const fetcher = url => axios.get(url).then(res => res.data)
-  const { data, error } = useSWR('https://13.79.156.47:8002/atm', fetcher)
-  useEffect(()=>{
-    setChartDatas(data);
-  },[data])
-  var count = Object.keys(chartDatas).length;
-console.log(count);
+  const fetcher = (url) => axios.get(url).then((res) => res.data);
+  const { data: totalAtm, error: totalAtmError } = useSWR(
+    `${process.env.API_URL}/services/GetWidgetContent?WidgetId=ToplamAtm`,
+    fetcher
+  );
+  const { data: users, error: usersError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=IzlenenAtm',
+    fetcher
+  );
+  const { data: online, error: onlineError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=CevrimiciAtm',
+    fetcher
+  );
+  const { data: alarm, error: alarmError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=AlarmCount',
+    fetcher
+  );
+  const { data: aydinlatma, error: aydinlatmaError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=Ayd%C4%B1nlatmaBarGraph',
+    fetcher
+  );
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            {' '}
-            {/*1. kısım */}
-            <AppWelcome
-              title={`Welcome back! \n ${user?.displayName}`}
-              description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
-              img={
-                <SeoIllustration
-                  sx={{
-                    p: 3,
-                    width: 360,
-                    margin: { xs: 'auto', md: 'inherit' },
-                  }}
-                />
-              }
-              action={<Button variant="contained">Go Now</Button>}
-            />
-          </Grid>
+          {totalAtm ? (
+            <Grid item xs={12} md={3}>
+              <AppWidgetSummary
+                title={totalAtm.label}
+                total={totalAtm.data.field}
+                chartColor={theme.palette.chart.red[0]}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
+                subheader={totalAtm.data.desc}
+              />
+            </Grid>
+          ) : null}
 
-          <Grid item xs={12} md={4}>
-            <AppFeatured list={_appFeatured} />
-          </Grid>
+          {users ? (
+            <Grid item xs={12} md={3}>
+              <AppWidgetSummary
+                title={users.label}
+                total={users.data.field}
+                chartColor={theme.palette.chart.red[0]}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
+                subheader={users.data.desc}
+              />
+            </Grid>
+          ) : null}
 
-     
-          {chartDatas
-            ? chartDatas.map((data, i) => (
-                <Grid key={i} item xs={12} md={4}>
-                  <AppWidgetSummary
+          {online ? (
+            <Grid item xs={12} md={3}>
+              <AppWidgetSummary
+                title={online.label}
+                total={online.data.field}
+                chartColor={theme.palette.chart.red[0]}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
+                subheader={online.data.desc}
+              />
+            </Grid>
+          ) : null}
 
-                  title={"Toplam ATM ayısı"}
-                    total={count}
-                    chartColor={theme.palette.chart.red[0]}
-                    chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                  />
-                </Grid>
-              ))
-            : null} 
-                
+          {alarm ? (
+            <Grid item xs={12} md={3}>
+              <AppWidgetSummary
+                title={alarm.label}
+                total={alarm.data.field}
+                chartColor={theme.palette.chart.red[0]}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
+                subheader={alarm.data.desc}
+              />
+            </Grid>
+          ) : null}
 
- 
-{/* {chartDatas
-            ? chartDatas.map((data, i) => (
-                <Grid key={i} item xs={12} md={4}>
-                  <AppWidgetSummary
-                    title={"Toplam ATM ayısı"}
-                    total={chartDatas.length}
-                    chartColor={theme.palette.chart.red[0]}
-                    chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                  />
-                </Grid>
-              ))
-            : null}  */}
+      {aydinlatma?(
+         <Grid item xs={12} md={8}>
+         <BookingReservationStats
+           title={aydinlatma.label}
+           subheader="(+43% Check In | +12% Check Out) than last year"
+           chartLabels={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']}
+           chartData={[
+             {
+               year: 'Week',
+               data: [
+                 { name: 'Check In', data: [10, 41, 35, 151, 49, 62, 69, 91, 48] },
+                 { name: 'Check Out', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
+               ],
+             },
+             {
+               year: 'Month',
+               data: [
+                 { name: 'Check In', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
+                 { name: 'Check Out', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] },
+               ],
+             },
+             {
+               year: 'Year',
+               data: [
+                 { name: 'Check In', data: [76, 42, 29, 41, 27, 138, 117, 86, 63] },
+                 { name: 'Check Out', data: [80, 55, 34, 114, 80, 130, 15, 28, 55] },
+               ],
+             },
+           ]}
+         />
+       </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+      ):null}  
+              
+            
+          <Grid item xs={12} md={4} lg={4}>
             <AppCurrentDownload
               title="Current Download"
               chartColors={[
@@ -125,7 +178,7 @@ console.log(count);
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={4} lg={8}>
             <AppAreaInstalled
               title="Area Installed"
               subheader="(+43%) than last year"
@@ -149,7 +202,7 @@ console.log(count);
             />
           </Grid>
 
-          <Grid item xs={12} lg={8}>
+          <Grid item xs={12} lg={14}>
             <AppNewInvoice
               title="New Invoice"
               tableData={_appInvoices}
@@ -174,13 +227,49 @@ console.log(count);
           <Grid item xs={12} md={6} lg={4}>
             <AppTopAuthors title="Top Authors" list={_appAuthors} />
           </Grid>
-
           <Grid item xs={12} md={6} lg={4}>
             <Stack spacing={3}>
               <AppWidget title="Conversion" total={38566} icon={'eva:person-fill'} chartData={48} />
               <AppWidget title="Applications" total={55566} icon={'eva:email-fill'} color="warning" chartData={75} />
             </Stack>
           </Grid>
+                    {/* <Grid item xs={12} md={8}>
+            {' '}
+
+            <AppWelcome
+              title={`Welcome back! \n ${user?.displayName}`}
+              description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
+              img={
+                <SeoIllustration
+                  sx={{
+                    p: 3,
+                    width: 360,
+                    margin: { xs: 'auto', md: 'inherit' },
+                  }}
+                />
+              }
+              action={<Button variant="contained">Go Now</Button>}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <AppFeatured list={_appFeatured} />
+          </Grid> */}
+
+          {/* {chartDatas
+            ? chartDatas.map((data, i) => (
+                <Grid key={i} item xs={12} md={4}>
+                  <AppWidgetSummary
+                    title={"Toplam ATM ayısı"}
+                    total={chartDatas.length}
+                    chartColor={theme.palette.chart.red[0]}
+                    chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
+                  />
+                </Grid>
+              ))
+            : null}  */}
+
+        
         </Grid>
       </Container>
     </Page>

@@ -24,6 +24,9 @@ import {
 } from '../../sections/@dashboard/general/booking';
 // assets
 import { BookingIllustration, CheckInIllustration, CheckOutIllustration } from '../../assets';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +39,21 @@ export default function GeneralBooking() {
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
-  
+  const [chartDatas, setChartDatas] = useState();
+  const [atmDatas, setAtmDatas] = useState();
+  const fetcher = (url) => axios.get(url).then((res) => res.data);
+  const { data, error } = useSWR('https://13.79.156.47:8002/atm/getpie', fetcher);
+  const { response } = useSWR('https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=ToplamAtm', fetcher);
+
+  useEffect(() => {
+    setAtmDatas(response);
+    console.log(atmDatas);
+  },[response]);
+
+  useEffect(() => {
+    console.log(chartDatas);
+    setChartDatas(data);
+  }, [data]);
 
   return (
     <Page title="General: Banking">
