@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import merge from 'lodash/merge';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { Card, CardHeader, Box, TextField } from '@mui/material';
 // components
@@ -15,13 +15,18 @@ BookingReservationStats.propTypes = {
   chartLabels: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-export default function BookingReservationStats({ title, subheader, chartLabels, chartData, ...other }) {
-  const [seriesData, setSeriesData] = useState('Year');
+export default function BookingReservationStats({ title, subheader, data, ...other }) {
+  const [chartData, setChartData] = useState();
+  const chartLabels = data.map((arrayData) => arrayData.key);
+  useEffect(()=>{
 
-  const handleChangeSeriesData = (event) => {
-    setSeriesData(event.target.value);
-  };
-
+    var chartData=[{}]
+    chartData[0].data = new Array()
+    data.map((data)=>{
+      chartData[0].data.push({name:data.key,data:[data.field]})
+    })
+    setChartData(chartData)
+  },[data])
   const chartOptions = merge(BaseOptionChart(), {
     stroke: {
       show: true,
@@ -33,46 +38,31 @@ export default function BookingReservationStats({ title, subheader, chartLabels,
     },
     tooltip: {
       y: {
-        formatter: (val) => `$${val}`,
+        formatter: (val) => `${val}`,
       },
     },
   });
-
   return (
-    <Card {...other}>
+    <>
+    {chartData?(
+      <Card {...other}>
+      
       <CardHeader
         title={title}
         subheader={subheader}
-        action={
-          <TextField
-            select
-            fullWidth
-            value={seriesData}
-            SelectProps={{ native: true }}
-            onChange={handleChangeSeriesData}
-            sx={{
-              '& fieldset': { border: '0 !important' },
-              '& select': { pl: 1, py: 0.5, pr: '24px !important', typography: 'subtitle2' },
-              '& .MuiOutlinedInput-root': { borderRadius: 0.75, bgcolor: 'background.neutral' },
-              '& .MuiNativeSelect-icon': { top: 4, right: 0, width: 20, height: 20 },
-            }}
-          >
-            {chartData.map((option) => (
-              <option key={option.year} value={option.year}>
-                {option.year}
-              </option>
-            ))}
-          </TextField>
-        }
       />
 
-      {chartData.map((item) => (
+      {chartData?.map((item) =>{
+        console.log(item)
+        return(
         <Box key={item.year} sx={{ mt: 3, mx: 3 }} dir="ltr">
-          {item.year === seriesData && (
+         
             <ReactApexChart type="bar" series={item.data} options={chartOptions} height={364} />
-          )}
+
         </Box>
-      ))}
+      )})}
     </Card>
+    ):null}
+</>
   );
 }

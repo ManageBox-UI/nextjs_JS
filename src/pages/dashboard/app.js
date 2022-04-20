@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid, Stack, Button, Map } from '@mui/material';
+import { Container, Grid, Stack, Button, Map,forEach, arrays } from '@mui/material';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 // layouts
@@ -23,16 +23,11 @@ import {
   AppTopInstalledCountries,
 } from '../../sections/@dashboard/general/app';
 import {
-  BookingDetails,
-  BookingBookedRoom,
-  BookingTotalIncomes,
-  BookingRoomAvailable,
-  BookingNewestBooking,
-  BookingWidgetSummary,
-  BookingCheckInWidgets,
-  BookingCustomerReviews,
-  BookingReservationStats,
+ BookingReservationStats,
 } from '../../sections/@dashboard/general/booking';
+import {
+  AnalyticsCurrentVisits,
+ } from '../../sections/@dashboard/general/analytics';
 // assets
 import { SeoIllustration } from '../../assets';
 import axios from 'axios';
@@ -73,6 +68,12 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=Ayd%C4%B1nlatmaBarGraph',
     fetcher
   );
+  const { data: pieAydinlatma, error: pieAydinlatmaError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=Ayd%C4%B1nlatmaDurumuPieChart',
+    fetcher
+  );
+
+ 
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -126,57 +127,54 @@ export default function GeneralApp() {
           ) : null}
 
       {aydinlatma?(
+
          <Grid item xs={12} md={8}>
          <BookingReservationStats
            title={aydinlatma.label}
            subheader="(+43% Check In | +12% Check Out) than last year"
-           chartLabels={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']}
-           chartData={[
-             {
-               year: 'Week',
-               data: [
-                 { name: 'Check In', data: [10, 41, 35, 151, 49, 62, 69, 91, 48] },
-                 { name: 'Check Out', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
-               ],
-             },
-             {
-               year: 'Month',
-               data: [
-                 { name: 'Check In', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
-                 { name: 'Check Out', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] },
-               ],
-             },
-             {
-               year: 'Year',
-               data: [
-                 { name: 'Check In', data: [76, 42, 29, 41, 27, 138, 117, 86, 63] },
-                 { name: 'Check Out', data: [80, 55, 34, 114, 80, 130, 15, 28, 55] },
-               ],
-             },
-           ]}
+           data={aydinlatma.data}
          />
        </Grid>
 
       ):null}  
-              
-            
-          <Grid item xs={12} md={4} lg={4}>
-            <AppCurrentDownload
-              title="Current Download"
+
+{/* {pieAydinlatma?(
+  pieAydinlatma.data.map((data , i) =>(
+    <Grid item xs={12} md={6} key={i}lg={4}>
+    <AnalyticsCurrentVisits
+      title={pieAydinlatma.label}
+      chartData={[
+        { label: data.key, value:data.field},
+      ]}
+      chartColors={[
+        theme.palette.primary.main,
+        theme.palette.chart.blue[0],
+        theme.palette.chart.violet[0],
+        theme.palette.chart.yellow[0],
+      ]}
+    />
+  </Grid>)
+  )
+):null} */}
+
+
+{pieAydinlatma?(
+  <Grid item xs={12} md={4} lg={4}>
+          <AnalyticsCurrentVisits
+              title={pieAydinlatma.label}
+              chartData={pieAydinlatma.data}
               chartColors={[
-                theme.palette.primary.lighter,
-                theme.palette.primary.light,
                 theme.palette.primary.main,
-                theme.palette.primary.dark,
-              ]}
-              chartData={[
-                { label: 'Mac', value: 12244 },
-                { label: 'Window', value: 53345 },
-                { label: 'iOS', value: 44313 },
-                { label: 'Android', value: 78343 },
+                theme.palette.chart.blue[0],
+                theme.palette.chart.violet[0],
+                theme.palette.chart.yellow[0],
               ]}
             />
-          </Grid>
+            </Grid>
+):null}
+
+                  
+          
 
           <Grid item xs={12} md={4} lg={8}>
             <AppAreaInstalled

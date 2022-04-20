@@ -41,9 +41,10 @@ AnalyticsCurrentVisits.propTypes = {
 export default function AnalyticsCurrentVisits({ title, subheader, chartColors, chartData, ...other }) {
   const theme = useTheme();
 
-  const chartLabels = chartData.map((i) => i.label);
+  const chartLabels = chartData.map((data) => data.key);
 
-  const chartSeries = chartData.map((i) => i.value);
+  const chartSeries = chartData.map((data) => data.field);
+  
 
   const chartOptions = merge(BaseOptionChart(), {
     colors: chartColors,
