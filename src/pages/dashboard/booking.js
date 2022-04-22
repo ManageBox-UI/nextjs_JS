@@ -39,21 +39,7 @@ export default function GeneralBooking() {
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
-  const [chartDatas, setChartDatas] = useState();
-  const [atmDatas, setAtmDatas] = useState();
-  const fetcher = (url) => axios.get(url).then((res) => res.data);
-  const { data, error } = useSWR('https://13.79.156.47:8002/atm/getpie', fetcher);
-  const { response } = useSWR('https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=ToplamAtm', fetcher);
 
-  useEffect(() => {
-    setAtmDatas(response);
-    console.log(atmDatas);
-  },[response]);
-
-  useEffect(() => {
-    console.log(chartDatas);
-    setChartDatas(data);
-  }, [data]);
 
   return (
     <Page title="General: Banking">
@@ -107,29 +93,17 @@ export default function GeneralBooking() {
             <BookingReservationStats
               title="Reservation Stats"
               subheader="(+43% Check In | +12% Check Out) than last year"
-              chartLabels={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']}
-              chartData={[
+              data={[
                 {
-                  year: 'Week',
-                  data: [
-                    { name: 'Check In', data: [10, 41, 35, 151, 49, 62, 69, 91, 48] },
-                    { name: 'Check Out', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
-                  ],
+                  key: "ILETISIM_YOK",
+                  field: 1,
+                  status: 1
                 },
                 {
-                  year: 'Month',
-                  data: [
-                    { name: 'Check In', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
-                    { name: 'Check Out', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] },
-                  ],
-                },
-                {
-                  year: 'Year',
-                  data: [
-                    { name: 'Check In', data: [76, 42, 29, 41, 27, 138, 117, 86, 63] },
-                    { name: 'Check Out', data: [80, 55, 34, 114, 80, 130, 15, 28, 55] },
-                  ],
-                },
+                  key: "KAPALI",
+                  field: 2,
+                  status: 1
+                }
               ]}
             />
           </Grid>

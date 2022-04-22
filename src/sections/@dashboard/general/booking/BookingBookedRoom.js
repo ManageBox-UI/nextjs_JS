@@ -22,9 +22,9 @@ export default function BookingBookedRoom({ title, subheader, data, ...other }) 
           <LinearProgress
             variant="determinate"
             key={progress.status}
-            value={progress.value}
+            value={progress.field}
             color={
-              (progress.status === 'Pending' && 'warning') || (progress.status === 'Cancel' && 'error') || 'success'
+              (progress.key === 'Pending' && 'BILINMIYOR') || (progress.key === 'Cancel' && 'ELEKTRIK_KESIK') || 'success'
             }
             sx={{ height: 8, bgcolor: 'grey.50016' }}
           />
@@ -33,7 +33,7 @@ export default function BookingBookedRoom({ title, subheader, data, ...other }) 
 
       <Stack direction="row" justifyContent="space-between" sx={{ px: 3, pb: 3 }}>
         {data.map((progress) => (
-          <Stack key={progress.status} alignItems="center">
+          <Stack key={progress.key} alignItems="center">
             <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
               <Box
                 sx={{
@@ -41,17 +41,19 @@ export default function BookingBookedRoom({ title, subheader, data, ...other }) 
                   height: 12,
                   borderRadius: 0.5,
                   bgcolor: 'success.main',
-                  ...(progress.status === 'Pending' && { bgcolor: 'warning.main' }),
-                  ...(progress.status === 'Cancel' && { bgcolor: 'error.main' }),
+                   ...(progress.key === 'NORMAL' && { bgcolor: 'success.main' }),
+                  ...(progress.key === 'BILINMIYOR' && { bgcolor: 'warning.main' }),
+                  ...(progress.key === 'ELEKTRIK_KESIK' && { bgcolor: 'error.main' }),
+                 
                 }}
               />
 
               <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                {progress.status}
+                {progress.key}
               </Typography>
             </Stack>
 
-            <Typography variant="h6">{fShortenNumber(progress.quantity)}</Typography>
+            <Typography variant="h6">{fShortenNumber(progress.field)}</Typography>
           </Stack>
         ))}
       </Stack>

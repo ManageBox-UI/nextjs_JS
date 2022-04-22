@@ -74,7 +74,7 @@ export default function AppWidgetSummary({ title, percent, total, chartColor,sub
         </Stack>
 
         <Typography variant="h3">{fNumber(total)}</Typography>
-        <Typography variant="subtitle1">{<h6>{subheader}</h6>}</Typography>
+        <Typography variant="caption">{<p>{subheader}</p>}</Typography>
       </Box>
 
       <ReactApexChart type="bar" series={[{ data: chartData }]} options={chartOptions} width={60} height={36} />

@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid, Stack, Button, Map,forEach, arrays } from '@mui/material';
+import { Container, Grid, Stack, Button, Map, forEach, arrays } from '@mui/material';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 // layouts
@@ -23,11 +23,13 @@ import {
   AppTopInstalledCountries,
 } from '../../sections/@dashboard/general/app';
 import {
- BookingReservationStats,
+  BookingReservationStats,
+  BookingTotalIncomes,
+  BookingCheckInWidgets,
+  BookingBookedRoom,
 } from '../../sections/@dashboard/general/booking';
-import {
-  AnalyticsCurrentVisits,
- } from '../../sections/@dashboard/general/analytics';
+import { _bookings, _bookingNew, _bookingsOverview, _bookingReview } from '../../_mock';
+import { AnalyticsCurrentVisits } from '../../sections/@dashboard/general/analytics';
 // assets
 import { SeoIllustration } from '../../assets';
 import axios from 'axios';
@@ -52,7 +54,7 @@ export default function GeneralApp() {
     `${process.env.API_URL}/services/GetWidgetContent?WidgetId=ToplamAtm`,
     fetcher
   );
-  const { data: users, error: usersError } = useSWR(
+  const { data: izlenen, error: izlenenError } = useSWR(
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=IzlenenAtm',
     fetcher
   );
@@ -64,7 +66,7 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=AlarmCount',
     fetcher
   );
-  const { data: aydinlatma, error: aydinlatmaError } = useSWR(
+  const { data: aydinlatmaBar, error: aydinlatmaError } = useSWR(
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=Ayd%C4%B1nlatmaBarGraph',
     fetcher
   );
@@ -72,8 +74,24 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=Ayd%C4%B1nlatmaDurumuPieChart',
     fetcher
   );
+  const { data: enerjiLine, error: enerjiLineError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=HarcananEnerjiLineChart',
+    fetcher
+  );
+  const { data: upsDurumu, error: upsDurumuError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=UpsDurumuProgress',
+    fetcher
+  );
+  const { data: aydinlatmaProsses, error: aydinlatmaProssesError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=Ayd%C4%B1nlatmaDurumuProgress',
+    fetcher
+  );
+  const { data: klimaProsses, error: klimaProssesError } = useSWR(
+    'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=KlimaDurumuProgress',
+    fetcher
+  );
+  console.log(upsDurumu);
 
- 
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -90,14 +108,17 @@ export default function GeneralApp() {
             </Grid>
           ) : null}
 
-          {users ? (
+
+          
+
+          {izlenen ? (
             <Grid item xs={12} md={3}>
               <AppWidgetSummary
-                title={users.label}
-                total={users.data.field}
+                title={izlenen.label}
+                total={izlenen.data.field}
                 chartColor={theme.palette.chart.red[0]}
                 chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                subheader={users.data.desc}
+                subheader={izlenen.data.desc}
               />
             </Grid>
           ) : null}
@@ -126,19 +147,63 @@ export default function GeneralApp() {
             </Grid>
           ) : null}
 
-      {aydinlatma?(
+{aydinlatmaBar ? (
+            <Grid item xs={12} md={4}>
+              <BookingReservationStats
+                title={aydinlatmaBar.label}
+                subheader="(+43% Check In | +12% Check Out) than last year"
+                data={aydinlatmaBar.data}
+              />
+            </Grid>
+          ) : null}
 
-         <Grid item xs={12} md={8}>
-         <BookingReservationStats
-           title={aydinlatma.label}
-           subheader="(+43% Check In | +12% Check Out) than last year"
-           data={aydinlatma.data}
-         />
-       </Grid>
+          {enerjiLine ? (
+             <Grid item xs={12} md={4}>
+              <BookingTotalIncomes
+                total={enerjiLine.percentage}
+                percent={2.6}
+                chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
+              />
+            </Grid>
+          ) : null}
 
-      ):null}  
+{pieAydinlatma ? (
+            <Grid item xs={12} md={4} lg={4}>
+              <AnalyticsCurrentVisits
+                title={pieAydinlatma.label}
+                chartData={pieAydinlatma.data}
+                chartColors={[
+                  theme.palette.primary.main,
+                  theme.palette.chart.blue[0],
+                  theme.palette.chart.violet[0],
+                  theme.palette.chart.yellow[0],
+                ]}
+              />
+            </Grid>
+          ) : null}
 
-{/* {pieAydinlatma?(
+
+        {upsDurumu?(
+          
+           <Grid item xs={12} md={4}>
+           <BookingBookedRoom title={upsDurumu.label} data={upsDurumu.data} subheader={upsDurumu.desc} />
+         </Grid>
+        ):null}
+
+{aydinlatmaProsses?(
+           <Grid item xs={12} md={4}>
+           <BookingBookedRoom title={aydinlatmaProsses.label} data={aydinlatmaProsses.data} subheader={aydinlatmaProsses.desc} />
+         </Grid>
+        ):null}
+
+{klimaProsses?(
+           <Grid item xs={12} md={4}>
+           <BookingBookedRoom title={klimaProsses.label} data={klimaProsses.data} subheader={klimaProsses.desc} />
+         </Grid>
+        ):null}
+         
+
+          {/* {pieAydinlatma?(
   pieAydinlatma.data.map((data , i) =>(
     <Grid item xs={12} md={6} key={i}lg={4}>
     <AnalyticsCurrentVisits
@@ -157,28 +222,12 @@ export default function GeneralApp() {
   )
 ):null} */}
 
-
-{pieAydinlatma?(
-  <Grid item xs={12} md={4} lg={4}>
-          <AnalyticsCurrentVisits
-              title={pieAydinlatma.label}
-              chartData={pieAydinlatma.data}
-              chartColors={[
-                theme.palette.primary.main,
-                theme.palette.chart.blue[0],
-                theme.palette.chart.violet[0],
-                theme.palette.chart.yellow[0],
-              ]}
-            />
-            </Grid>
-):null}
-
-                  
           
+        
 
           <Grid item xs={12} md={4} lg={8}>
             <AppAreaInstalled
-              title="Area Installed"
+              title={enerjiLine?.label}
               subheader="(+43%) than last year"
               chartLabels={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']}
               chartData={[
@@ -231,7 +280,7 @@ export default function GeneralApp() {
               <AppWidget title="Applications" total={55566} icon={'eva:email-fill'} color="warning" chartData={75} />
             </Stack>
           </Grid>
-                    {/* <Grid item xs={12} md={8}>
+          {/* <Grid item xs={12} md={8}>
             {' '}
 
             <AppWelcome
@@ -266,8 +315,6 @@ export default function GeneralApp() {
                 </Grid>
               ))
             : null}  */}
-
-        
         </Grid>
       </Container>
     </Page>

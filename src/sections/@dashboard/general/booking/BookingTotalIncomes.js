@@ -14,7 +14,7 @@ BookingTotalIncomes.propTypes = {
   sx: PropTypes.object,
   total: PropTypes.number,
   percent: PropTypes.number,
-  chartData: PropTypes.arrayOf(PropTypes.number),
+  chartData: PropTypes.oneOfType(PropTypes.number,PropTypes.string),
 };
 
 export default function BookingTotalIncomes({ total, percent, chartData, sx, ...other }) {
@@ -68,7 +68,7 @@ export default function BookingTotalIncomes({ total, percent, chartData, sx, ...
         </div>
       </Stack>
 
-      <ReactApexChart type="area" series={[{ data: chartData }]} options={chartOptions} height={132} />
+      <ReactApexChart type="area" series={[{ data: chartData }]} options={chartOptions} height={320} />
     </Card>
   );
 }
