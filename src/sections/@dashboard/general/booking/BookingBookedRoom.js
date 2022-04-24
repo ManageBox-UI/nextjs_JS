@@ -22,9 +22,9 @@ export default function BookingBookedRoom({ title, subheader, data, ...other }) 
           <LinearProgress
             variant="determinate"
             key={progress.status}
-            value={progress.field}
+            value={progress.field*5}
             color={
-              (progress.key === 'Pending' && 'BILINMIYOR') || (progress.key === 'Cancel' && 'ELEKTRIK_KESIK') || 'success'
+              progress.key === 'NORMAL'? 'success' : progress.key === 'BILINMIYOR' ? 'warning' : 'error'
             }
             sx={{ height: 8, bgcolor: 'grey.50016' }}
           />

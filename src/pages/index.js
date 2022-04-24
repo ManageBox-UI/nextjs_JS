@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Layout from '../layouts';
 // components
 import Page from '../components/Page';
+import { useRouter } from 'next/router'
 // sections
 import {
   HomeHero,
@@ -16,6 +17,7 @@ import {
   HomeCleanInterfaces,
   HomeHugePackElements,
 } from '../sections/home';
+import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -27,34 +29,17 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-HomePage.getLayout = function getLayout(page) {
-  return <Layout variant="main">{page}</Layout>;
-};
-
 // ----------------------------------------------------------------------
 
 export default function HomePage() {
+  const router = useRouter()
+  useEffect(()=>{
+    router.push('auth/login/')
+  },[])
   return (
     <Page title="The starting point for your next project">
-      <HomeHero />
-
-      <ContentStyle>
-        <HomeMinimal />
-
-        <HomeHugePackElements />
-
-        <HomeDarkMode />
-
-        <HomeColorPresets />
-
-        <HomeCleanInterfaces />
-
-        <HomePricingPlans />
-
-        <HomeLookingFor />
-
-        <HomeAdvertisement />
-      </ContentStyle>
+      <>
+      </>
     </Page>
   );
 }

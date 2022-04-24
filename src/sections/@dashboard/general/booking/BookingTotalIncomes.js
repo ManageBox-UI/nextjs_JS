@@ -7,7 +7,7 @@ import { fCurrency, fPercent } from '../../../../utils/formatNumber';
 // components
 import Iconify from '../../../../components/Iconify';
 import ReactApexChart, { BaseOptionChart } from '../../../../components/chart';
-
+import {useEffect} from 'react'
 // ----------------------------------------------------------------------
 
 BookingTotalIncomes.propTypes = {
@@ -18,6 +18,9 @@ BookingTotalIncomes.propTypes = {
 };
 
 export default function BookingTotalIncomes({ total, percent, chartData, sx, ...other }) {
+  useEffect(()=>{
+    console.log(total)
+  },[total])
   const chartOptions = merge(BaseOptionChart(), {
     chart: { sparkline: { enabled: true } },
     xaxis: { labels: { show: false } },
@@ -51,7 +54,7 @@ export default function BookingTotalIncomes({ total, percent, chartData, sx, ...
       <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
         <div>
           <Typography sx={{ mb: 2, typography: 'subtitle2' }}>Total Incomes</Typography>
-          <Typography sx={{ typography: 'h3' }}>{fCurrency(total)}</Typography>
+          <Typography sx={{ typography: 'h3' }}>{fCurrency()}</Typography>
         </div>
 
         <div>

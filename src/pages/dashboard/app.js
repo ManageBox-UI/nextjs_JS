@@ -160,7 +160,8 @@ export default function GeneralApp() {
           {enerjiLine ? (
              <Grid item xs={12} md={4}>
               <BookingTotalIncomes
-                total={enerjiLine.percentage}
+                title={enerjiLine.data.category}
+                total={enerjiLine.data.title}
                 percent={2.6}
                 chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
               />
@@ -224,7 +225,7 @@ export default function GeneralApp() {
 
           
         
-
+{/* 
           <Grid item xs={12} md={4} lg={8}>
             <AppAreaInstalled
               title={enerjiLine?.label}
@@ -247,7 +248,7 @@ export default function GeneralApp() {
                 },
               ]}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} lg={14}>
             <AppNewInvoice
