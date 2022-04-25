@@ -18,7 +18,6 @@ BookingTotalIncomes.propTypes = {
 };
 
 export default function BookingTotalIncomes({ total, percent, chartData, sx, ...other }) {
-
   const chartOptions = merge(BaseOptionChart(), {
     chart: { sparkline: { enabled: true } },
     xaxis: { labels: { show: false } },

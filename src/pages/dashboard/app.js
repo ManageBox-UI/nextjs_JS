@@ -90,7 +90,10 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=KlimaDurumuProgress',
     fetcher
   );
-  console.log(upsDurumu);
+useEffect(()=>{
+console.log(klimaProsses)
+console.log(klimaProssesError);
+},[klimaProsses,klimaProssesError])
 
   return (
     <Page title="General: App">
@@ -99,7 +102,7 @@ export default function GeneralApp() {
           {totalAtm ? (
             <Grid item xs={12} md={3}>
               <AppWidgetSummary
-                title={totalAtm.label}
+                title={totalAtm.label || ''}
                 total={totalAtm.data.field}
                 chartColor={theme.palette.chart.red[0]}
                 chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
