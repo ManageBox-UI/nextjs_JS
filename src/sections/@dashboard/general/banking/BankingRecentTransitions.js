@@ -149,7 +149,7 @@ function BankingRecentTransitionsRow({ row }) {
           </Box>
           <Box sx={{ ml: 2 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {row.message}
+              {row.name}
             </Typography>
             <Typography variant="subtitle2"> {row.category}</Typography>
           </Box>
@@ -157,9 +157,9 @@ function BankingRecentTransitionsRow({ row }) {
       </TableCell>
 
       <TableCell>
-        <Typography variant="subtitle2">{format(new Date(row.date), 'dd MMM yyyy')}</Typography>
+        <Typography variant="subtitle2">{row.webUserID}</Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {format(new Date(row.date), 'p')}
+          {row.name}
         </Typography>
       </TableCell>
 
@@ -167,10 +167,10 @@ function BankingRecentTransitionsRow({ row }) {
 
       <TableCell>
         <Label
-          variant={isLight ? 'ghost' : 'filled'}
+          variant={row.email}
           color={(row.status === 'completed' && 'success') || (row.status === 'in_progress' && 'warning') || 'error'}
         >
-          {sentenceCase(row.status)}
+          {sentenceCase(row.email)}
         </Label>
       </TableCell>
 
