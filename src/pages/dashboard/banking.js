@@ -20,6 +20,9 @@ import {
   BankingRecentTransitions,
   BankingExpensesCategories,
 } from '../../sections/@dashboard/general/banking';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +32,15 @@ GeneralBanking.getLayout = function getLayout(page) {
 
 // ----------------------------------------------------------------------
 export default function GeneralBanking() {
+  const fetcher = (url) =>
+    axios
+      .get(url,{header:{Authontication: 'Bearer' + localStorage.getItem('accessToken')}})
+      .then((res) => res.data);
+  const { data: kullanicilar, error: kullanicilarError } = useSWR(
+    `https://13.79.156.47:8002/services/GetReportTable?TableID=Kullan%C4%B1c%C4%B1lar`,
+    fetcher
+  );
+  console.log(kullanicilar)
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
@@ -36,9 +48,22 @@ export default function GeneralBanking() {
   return (
     <Page title="General: Banking">
       <Container maxWidth={themeStretch ? false : 'xl'}>
+      {kullanicilar?(<BankingRecentTransitions
+                title="Kullanıcılar"
+                tableData={kullanicilar}
+                tableLabels={[
+                  { id: 'description', label: 'Ad-Soyad' },
+                  { id: 'date', label: 'SicilNo' },
+                  { id: 'amount', label: 'E-mail' },
+                  { id: 'status', label: 'Rol' },
+                  { id: '' },
+                ]}
+              />):null}
         <Grid container spacing={3}>
+          
           <Grid item xs={12} md={7}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+              
               <BankingWidgetSummary
                 title="Income"
                 icon={'eva:diagonal-arrow-left-down-fill'}
@@ -119,17 +144,7 @@ export default function GeneralBanking() {
                 ]}
               />
 
-              <BankingRecentTransitions
-                title="Recent Transitions"
-                tableData={_bankingRecentTransitions}
-                tableLabels={[
-                  { id: 'description', label: 'Description' },
-                  { id: 'date', label: 'Date' },
-                  { id: 'amount', label: 'Amount' },
-                  { id: 'status', label: 'Status' },
-                  { id: '' },
-                ]}
-              />
+             
             </Stack>
           </Grid>
 

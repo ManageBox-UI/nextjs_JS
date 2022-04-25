@@ -87,23 +87,29 @@ export const defaultSettings = {
 
 export const allLangs = [
   {
+    label: 'Türkçe',
+    value: 'tr',
+    systemValue: trTR,
+    icon: '/assets/icons/flags/ic_flag_tr.svg',
+  },
+  {
     label: 'English',
     value: 'en',
     systemValue: enUS,
     icon: '/assets/icons/flags/ic_flag_en.svg',
   }, 
-  {
-    label: 'French',
-    value: 'fr',
-    systemValue: frFR,
-    icon: '/assets/icons/flags/ic_flag_fr.svg',
-  },
-  {
-    label: 'Vietnamese',
-    value: 'vn',
-    systemValue: viVN,
-    icon: '/assets/icons/flags/ic_flag_vn.svg',
-  },
+  // {
+  //   label: 'French',
+  //   value: 'fr',
+  //   systemValue: frFR,
+  //   icon: '/assets/icons/flags/ic_flag_fr.svg',
+  // },
+  // {
+  //   label: 'Vietnamese',
+  //   value: 'vn',
+  //   systemValue: viVN,
+  //   icon: '/assets/icons/flags/ic_flag_vn.svg',
+  // },
   {
     label: 'Chinese',
     value: 'cn',
@@ -116,12 +122,7 @@ export const allLangs = [
     systemValue: arSD,
     icon: '/assets/icons/flags/ic_flag_sa.svg',
   },
-  {
-    label: 'Türkçe',
-    value: 'tr',
-    systemValue: trTR,
-    icon: '/assets/icons/flags/ic_flag_sa.svg',
-  },
+  
 ];
 
 export const defaultLang = allLangs[0]; // English

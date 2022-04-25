@@ -22,7 +22,7 @@ const ICONS = {
   calendar: getIcon('ic_calendar'),
   ecommerce: getIcon('ic_ecommerce'),
   analytics: getIcon('ic_analytics'),
-  dashboard: getIcon('ic_dashboard'),
+  dashboard: getIcon('ic_home'),
   menuItem: getIcon('ic_menu_item'),
 };
 
@@ -32,11 +32,11 @@ const navConfig = [
   {
     subheader: 'general',
     items: [
-      { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
-      { title: 'ecommerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
-      { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
-      { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
-      { title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
+      { title: 'ATM', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
+      { title: 'ŞUBE', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
+      { title: 'Cihazlar', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
+      { title: 'Kullanıcılar', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
+      { title: 'İçe Aktar', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
     ],
   },
 

@@ -17,7 +17,8 @@ BookingTotalIncomes.propTypes = {
   chartData: PropTypes.oneOfType(PropTypes.number,PropTypes.string),
 };
 
-export default function BookingTotalIncomes({ total, percent, chartData, sx, ...other }) {
+export default function BookingTotalIncomes({ total, title,percent,subheader, chartData, sx, ...other }) {
+ 
   const chartOptions = merge(BaseOptionChart(), {
     chart: { sparkline: { enabled: true } },
     xaxis: { labels: { show: false } },
@@ -50,7 +51,7 @@ export default function BookingTotalIncomes({ total, percent, chartData, sx, ...
     >
       <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
         <div>
-          <Typography sx={{ mb: 2, typography: 'subtitle2' }}>Total Incomes</Typography>
+          <Typography sx={{ mb: 2, typography: 'subtitle2' }}>{title}</Typography>
           <Typography sx={{ typography: 'h3' }}>{total}</Typography>
         </div>
 
@@ -58,12 +59,12 @@ export default function BookingTotalIncomes({ total, percent, chartData, sx, ...
           <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ mb: 0.6 }}>
             <Iconify width={20} height={20} icon={percent >= 0 ? 'eva:trending-up-fill' : 'eva:trending-down-fill'} />
             <Typography variant="subtitle2" component="span" sx={{ ml: 0.5 }}>
-              {percent > 0 && '+'}
+              {percent < 0 && '+'}
               {fPercent(percent)}
             </Typography>
           </Stack>
           <Typography variant="body2" component="span" sx={{ opacity: 0.72 }}>
-            &nbsp;than last month
+            <subheader>{subheader}</subheader>
           </Typography>
         </div>
       </Stack>

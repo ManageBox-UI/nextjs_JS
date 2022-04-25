@@ -49,7 +49,10 @@ export default function GeneralApp() {
   const { user } = useAuth();
   const theme = useTheme();
   const { themeStretch } = useSettings();
-  const fetcher = (url) => axios.get(url).then((res) => res.data);
+  const fetcher = (url) =>
+    axios
+      .get(url,{header:{Authontication: 'Bearer' + localStorage.getItem('accessToken')}})
+      .then((res) => res.data);
   const { data: totalAtm, error: totalAtmError } = useSWR(
     `${process.env.API_URL}/services/GetWidgetContent?WidgetId=ToplamAtm`,
     fetcher
@@ -90,10 +93,10 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=KlimaDurumuProgress',
     fetcher
   );
-useEffect(()=>{
-console.log(klimaProsses)
-console.log(klimaProssesError);
-},[klimaProsses,klimaProssesError])
+  useEffect(() => {
+    console.log(klimaProsses);
+    console.log(klimaProssesError);
+  }, [klimaProsses, klimaProssesError]);
 
   return (
     <Page title="General: App">
@@ -110,9 +113,6 @@ console.log(klimaProssesError);
               />
             </Grid>
           ) : null}
-
-
-          
 
           {izlenen ? (
             <Grid item xs={12} md={3}>
@@ -150,28 +150,29 @@ console.log(klimaProssesError);
             </Grid>
           ) : null}
 
-{aydinlatmaBar ? (
+          {aydinlatmaBar ? (
             <Grid item xs={12} md={4}>
               <BookingReservationStats
                 title={aydinlatmaBar.label}
-                subheader="(+43% Check In | +12% Check Out) than last year"
+                // subheader="(+43% Check In | +12% Check Out) than last year"
                 data={aydinlatmaBar.data}
               />
             </Grid>
           ) : null}
 
           {enerjiLine ? (
-             <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={4}>
               <BookingTotalIncomes
-                title={enerjiLine.data.category}
+                title={enerjiLine.label}
                 total={enerjiLine.data.title}
-                percent={2.6}
+                percent={enerjiLine.data.percent}
                 chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
+                subheader={enerjiLine.data.period}
               />
             </Grid>
           ) : null}
 
-{pieAydinlatma ? (
+          {pieAydinlatma ? (
             <Grid item xs={12} md={4} lg={4}>
               <AnalyticsCurrentVisits
                 title={pieAydinlatma.label}
@@ -186,26 +187,27 @@ console.log(klimaProssesError);
             </Grid>
           ) : null}
 
+          {upsDurumu ? (
+            <Grid item xs={12} md={4}>
+              <BookingBookedRoom title={upsDurumu.label} data={upsDurumu.data} subheader={upsDurumu.desc} />
+            </Grid>
+          ) : null}
 
-        {upsDurumu?(
-          
-           <Grid item xs={12} md={4}>
-           <BookingBookedRoom title={upsDurumu.label} data={upsDurumu.data} subheader={upsDurumu.desc} />
-         </Grid>
-        ):null}
+          {aydinlatmaProsses ? (
+            <Grid item xs={12} md={4}>
+              <BookingBookedRoom
+                title={aydinlatmaProsses.label}
+                data={aydinlatmaProsses.data}
+                subheader={aydinlatmaProsses.desc}
+              />
+            </Grid>
+          ) : null}
 
-{aydinlatmaProsses?(
-           <Grid item xs={12} md={4}>
-           <BookingBookedRoom title={aydinlatmaProsses.label} data={aydinlatmaProsses.data} subheader={aydinlatmaProsses.desc} />
-         </Grid>
-        ):null}
-
-{klimaProsses?(
-           <Grid item xs={12} md={4}>
-           <BookingBookedRoom title={klimaProsses.label} data={klimaProsses.data} subheader={klimaProsses.desc} />
-         </Grid>
-        ):null}
-         
+          {klimaProsses ? (
+            <Grid item xs={12} md={4}>
+              <BookingBookedRoom title={klimaProsses.label} data={klimaProsses.data} subheader={klimaProsses.desc} />
+            </Grid>
+          ) : null}
 
           {/* {pieAydinlatma?(
   pieAydinlatma.data.map((data , i) =>(
@@ -226,9 +228,7 @@ console.log(klimaProssesError);
   )
 ):null} */}
 
-          
-        
-{/* 
+          {/* 
           <Grid item xs={12} md={4} lg={8}>
             <AppAreaInstalled
               title={enerjiLine?.label}
@@ -267,7 +267,7 @@ console.log(klimaProssesError);
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppTopRelated title="Top Related Applications" list={_appRelated} />
           </Grid>
 
@@ -283,7 +283,7 @@ console.log(klimaProssesError);
               <AppWidget title="Conversion" total={38566} icon={'eva:person-fill'} chartData={48} />
               <AppWidget title="Applications" total={55566} icon={'eva:email-fill'} color="warning" chartData={75} />
             </Stack>
-          </Grid>
+          </Grid> */}
           {/* <Grid item xs={12} md={8}>
             {' '}
 
