@@ -91,7 +91,7 @@ export const allLangs = [
     value: 'en',
     systemValue: enUS,
     icon: '/assets/icons/flags/ic_flag_en.svg',
-  },
+  }, 
   {
     label: 'French',
     value: 'fr',

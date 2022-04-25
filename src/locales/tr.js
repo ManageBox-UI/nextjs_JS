@@ -15,7 +15,7 @@ const tr = {
       description: `Need help? \n Please check our docs.`,
       documentation: `documentation`,
     },
-    app: `app`,
+    app: `Anasayfa`,
     user: `user`,
     list: `list`,
     edit: `edit`,
