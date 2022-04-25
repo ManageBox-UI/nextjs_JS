@@ -9,6 +9,7 @@ import frLocales from './fr';
 import vnLocales from './vn';
 import cnLocales from './cn';
 import arLocales from './ar';
+import trLocales from './tr';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +29,8 @@ i18n
       vn: { translations: vnLocales },
       cn: { translations: cnLocales },
       ar: { translations: arLocales },
+      tr: {translations: trLocales},
+
     },
     lng,
     fallbackLng: defaultLang.value,

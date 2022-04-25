@@ -1,5 +1,5 @@
 // @mui
-import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale';
+import { enUS, frFR, zhCN, viVN, arSD, trTR } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from './routes/paths';
 
@@ -114,6 +114,12 @@ export const allLangs = [
     label: 'Arabic (Sudan)',
     value: 'ar',
     systemValue: arSD,
+    icon: '/assets/icons/flags/ic_flag_sa.svg',
+  },
+  {
+    label: 'Türkçe',
+    value: 'tr',
+    systemValue: trTR,
     icon: '/assets/icons/flags/ic_flag_sa.svg',
   },
 ];
