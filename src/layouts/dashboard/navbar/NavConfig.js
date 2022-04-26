@@ -4,6 +4,9 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import Label from '../../../components/Label';
 import Iconify from '../../../components/Iconify';
 import SvgIconStyle from '../../../components/SvgIconStyle';
+import Icon from '@mui/material/Icon';
+import { AccountBalance, Atm, AdUnits, PeopleOutlined,UploadFile} from '@mui/icons-material';
+
 
 // ----------------------------------------------------------------------
 
@@ -16,13 +19,13 @@ const ICONS = {
   mail: getIcon('ic_mail'),
   user: getIcon('ic_user'),
   kanban: getIcon('ic_kanban'),
-  banking: getIcon('ic_banking'),
-  booking: getIcon('ic_booking'),
+  banking: <PeopleOutlined/>,
+  booking:<UploadFile/>,
   invoice: getIcon('ic_invoice'),
   calendar: getIcon('ic_calendar'),
-  ecommerce: getIcon('ic_ecommerce'),
-  analytics: getIcon('ic_analytics'),
-  dashboard: getIcon('ic_home'),
+  ecommerce:<AccountBalance/>,
+  analytics: <AdUnits/>,
+  dashboard: <Atm fontSize='24px'/>,
   menuItem: getIcon('ic_menu_item'),
 };
 

@@ -56,7 +56,8 @@ export default function GeneralBanking() {
                   { id: 'date', label: 'SicilNo' },
                   { id: 'amount', label: 'E-mail' },
                   { id: 'status', label: 'Rol' },
-                  { id: '' },
+                  { id: 'status', label: '' },
+                  
                 ]}
               />):null}
         <Grid container spacing={3}>

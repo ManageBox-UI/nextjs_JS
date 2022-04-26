@@ -59,8 +59,8 @@ export default function BookingTotalIncomes({ total, title,percent,subheader, ch
           <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ mb: 0.6 }}>
             <Iconify width={20} height={20} icon={percent >= 0 ? 'eva:trending-up-fill' : 'eva:trending-down-fill'} />
             <Typography variant="subtitle2" component="span" sx={{ ml: 0.5 }}>
-              {percent < 0 && '+'}
-              {fPercent(percent)}
+              {percent < 0 }
+              {percent}
             </Typography>
           </Stack>
           <Typography variant="body2" component="span" sx={{ opacity: 0.72 }}>

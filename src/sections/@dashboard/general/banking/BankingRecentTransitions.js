@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { sentenceCase } from 'change-case';
-// @mui
+import { sentenceCase } from 'change-case';// @mui
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -26,6 +25,7 @@ import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
 import Scrollbar from '../../../../components/Scrollbar';
 import { TableMoreMenu, TableHeadCustom } from '../../../../components/table';
+import {FileUpload, ThreeDRotation } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -120,50 +120,23 @@ function BankingRecentTransitionsRow({ row }) {
     <TableRow>
       <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ position: 'relative' }}>
-            {renderAvatar(row.category, row.avatar)}
-            <Box
-              sx={{
-                right: 0,
-                bottom: 0,
-                width: 18,
-                height: 18,
-                display: 'flex',
-                borderRadius: '50%',
-                position: 'absolute',
-                alignItems: 'center',
-                color: 'common.white',
-                bgcolor: 'error.main',
-                justifyContent: 'center',
-                ...(row.type === 'Income' && {
-                  bgcolor: 'success.main',
-                }),
-              }}
-            >
-              <Iconify
-                icon={row.type === 'Income' ? 'eva:diagonal-arrow-left-down-fill' : 'eva:diagonal-arrow-right-up-fill'}
-                width={16}
-                height={16}
-              />
-            </Box>
-          </Box>
+      
           <Box sx={{ ml: 2 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {row.name}
+              {<Avatar alt={row.name} src={row.avatar} />,<Typography variant="subtitle2"> {row.name}</Typography>}
             </Typography>
-            <Typography variant="subtitle2"> {row.category}</Typography>
           </Box>
         </Box>
       </TableCell>
 
       <TableCell>
         <Typography variant="subtitle2">{row.webUserID}</Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {row.name}
-        </Typography>
+        </Typography> */}
       </TableCell>
 
-      <TableCell>{fCurrency(row.amount)}</TableCell>
+     
 
       <TableCell>
         <Label
@@ -172,6 +145,12 @@ function BankingRecentTransitionsRow({ row }) {
         >
           {sentenceCase(row.email)}
         </Label>
+      </TableCell>
+      <TableCell>
+        <Typography variant="subtitle2">{row.role}</Typography>
+        {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          {row.name}
+        </Typography> */}
       </TableCell>
 
       <TableCell align="right">
@@ -191,16 +170,16 @@ function BankingRecentTransitionsRow({ row }) {
                 Print
               </MenuItem>
 
-              <MenuItem onClick={handleShare}>
-                <Iconify icon={'eva:share-fill'} />
-                Share
+              <MenuItem onClick={handleShare}sx={{ color:"green" }}>
+                <Iconify icon={'eva:upload-fill'} />
+                GÜNCELLE
               </MenuItem>
 
               <Divider sx={{ borderStyle: 'dashed' }} />
 
-              <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+              <MenuItem onClick={handleDelete} sx={{ color: 'error.main', backgroundColor:"black" }}>
                 <Iconify icon={'eva:trash-2-outline'} />
-                Delete
+                SİL
               </MenuItem>
             </>
           }

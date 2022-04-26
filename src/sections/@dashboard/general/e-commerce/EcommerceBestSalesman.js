@@ -78,7 +78,7 @@ function EcommerceBestSalesmanRow({ row }) {
           <Box sx={{ ml: 2 }}>
             <Typography variant="subtitle2"> {row.name} </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {row.email}
+              {row.nodeID}
             </Typography>
           </Box>
         </Stack>
@@ -87,12 +87,14 @@ function EcommerceBestSalesmanRow({ row }) {
       <TableCell>{row.category}</TableCell>
 
       <TableCell>
-        <Image src={row.flag} alt="country flag" sx={{ maxWidth: 28, mx: 'auto' }} />
+        <Image src={row.alarmPanel} alt="country flag" sx={{ maxWidth: 28, mx: 'auto' }} />
       </TableCell>
 
-      <TableCell>{fCurrency(row.total)}</TableCell>
+      <TableCell>{row.region}</TableCell>
+      <TableCell>{row.city}</TableCell>
+      <TableCell>{row.town}</TableCell>
 
-      <TableCell align="right">
+      {/* <TableCell align="right">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
           color={
@@ -105,7 +107,7 @@ function EcommerceBestSalesmanRow({ row }) {
         >
           {row.rank}
         </Label>
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 }

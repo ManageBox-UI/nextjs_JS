@@ -150,7 +150,7 @@ function AppNewInvoiceRow({ row }) {
 
               <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
                 <Iconify icon={'eva:trash-2-outline'} />
-                Delete
+                SİL
               </MenuItem>
             </>
           }

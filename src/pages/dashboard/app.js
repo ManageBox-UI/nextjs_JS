@@ -36,7 +36,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { from } from 'stylis';
-
+import { color } from '@mui/system';
 // ----------------------------------------------------------------------
 
 GeneralApp.getLayout = function getLayout(page) {
@@ -51,7 +51,7 @@ export default function GeneralApp() {
   const { themeStretch } = useSettings();
   const fetcher = (url) =>
     axios
-      .get(url,{header:{Authontication: 'Bearer' + localStorage.getItem('accessToken')}})
+      .get(url,{headers:{Authorization: 'Bearer ' + localStorage.getItem('accessToken')}})
       .then((res) => res.data);
   const { data: totalAtm, error: totalAtmError } = useSWR(
     `${process.env.API_URL}/services/GetWidgetContent?WidgetId=ToplamAtm`,
@@ -93,11 +93,9 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=KlimaDurumuProgress',
     fetcher
   );
-  useEffect(() => {
-    console.log(klimaProsses);
-    console.log(klimaProssesError);
-  }, [klimaProsses, klimaProssesError]);
-
+useEffect(()=>{
+  console.log(localStorage.getItem('accessToken'))
+},[localStorage.getItem('accessToken')])
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -131,7 +129,7 @@ export default function GeneralApp() {
               <AppWidgetSummary
                 title={online.label}
                 total={online.data.field}
-                chartColor={theme.palette.chart.red[0]}
+                chartColor={theme.palette.chart.green[0]}
                 chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
                 subheader={online.data.desc}
               />
@@ -165,7 +163,7 @@ export default function GeneralApp() {
               <BookingTotalIncomes
                 title={enerjiLine.label}
                 total={enerjiLine.data.title}
-                percent={enerjiLine.data.percent}
+                percent={enerjiLine.data.percentage}
                 chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
                 subheader={enerjiLine.data.period}
               />

@@ -29,6 +29,10 @@ import {
 import { AppWelcome } from '../../sections/@dashboard/general/app';
 // assets
 import { MotivationIllustration } from '../../assets';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { from } from 'stylis';
 
 // ----------------------------------------------------------------------
 
@@ -38,6 +42,14 @@ GeneralEcommerce.getLayout = function getLayout(page) {
 
 //
 export default function GeneralEcommerce() {
+  const fetcher = (url) =>
+    axios
+      .get(url, { header: { Authontication: 'Bearer' + localStorage.getItem('accessToken') } })
+      .then((res) => res.data);
+  const { data: subeler, error: subelerError } = useSWR(
+    `https://13.79.156.47:8002/services/GetReportTable?TableID=Subeler`,
+    fetcher
+  );
   const { user } = useAuth();
 
   const theme = useTheme();
@@ -48,6 +60,22 @@ export default function GeneralEcommerce() {
     <Page title="General: E-commerce">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
+          {subeler ? (
+            <Grid item xs={12} md={6} lg={12}>
+              <EcommerceBestSalesman
+                title="Şubeler"
+                tableData={subeler}
+                tableLabels={[
+                  { id: 'seller', label: 'Şube Kodu \nŞube Adı' },
+                  { id: 'product', label: 'İzleme Durumu' },
+                  { id: 'country', label: 'Alarm ' },
+                  { id: 'total', label: 'Bölge' },
+                  { id: 'rank', label: 'İl' },
+                  { id: 'rank', label: 'İlçe' },
+                ]}
+              />
+            </Grid>
+          ) : null}
           <Grid item xs={12} md={8}>
             <AppWelcome
               title={`Congratulations! \n ${user?.displayName}`}
@@ -144,20 +172,6 @@ export default function GeneralEcommerce() {
 
           <Grid item xs={12} md={6} lg={4}>
             <EcommerceCurrentBalance title="Current Balance" currentBalance={187650} sentAmount={25500} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <EcommerceBestSalesman
-              title="Best Salesman"
-              tableData={_ecommerceBestSalesman}
-              tableLabels={[
-                { id: 'seller', label: 'Seller' },
-                { id: 'product', label: 'Product' },
-                { id: 'country', label: 'Country', align: 'center' },
-                { id: 'total', label: 'Total' },
-                { id: 'rank', label: 'Rank', align: 'right' },
-              ]}
-            />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>

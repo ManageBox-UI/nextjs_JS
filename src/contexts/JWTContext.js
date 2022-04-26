@@ -98,7 +98,7 @@ function AuthProvider({ children }) {
         dispatch({
           type: 'INITIALIZE',
           payload: {
-            isAuthenticated: false,
+            isAuthenticated: true,
             user: null,
           },
         });
@@ -108,14 +108,14 @@ function AuthProvider({ children }) {
     initialize();
   }, []);
 
-  const login = async (email, password) => {
-    const response = await axios.post('/api/account/login', {
-      email,
+  const login = async (userName, password) => {
+    const response = await axios.post('https://13.79.156.47:8002/auth/Login', {
+      userName,
       password,
     });
-    const { accessToken, user } = response.data;
+    const { data, user } = response;
 
-    setSession(accessToken);
+    setSession(data);
 
     dispatch({
       type: 'LOGIN',
