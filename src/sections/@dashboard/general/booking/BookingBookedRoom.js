@@ -34,7 +34,12 @@ export default function BookingBookedRoom({ title, subheader, data, ...other }) 
       <Stack direction="row" justifyContent="space-between" sx={{ px: 3, pb: 3 }}>
         {data.map((progress) => (
           <Stack key={progress.key} alignItems="center">
+             <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                {progress.key}
+              </Typography>
+              <Typography variant="h6">{fShortenNumber(progress.field)}</Typography>
             <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+              
               <Box
                 sx={{
                   width: 12,
@@ -48,12 +53,10 @@ export default function BookingBookedRoom({ title, subheader, data, ...other }) 
                 }}
               />
 
-              <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                {progress.key}
-              </Typography>
+             
             </Stack>
 
-            <Typography variant="h6">{fShortenNumber(progress.field)}</Typography>
+          
           </Stack>
         ))}
       </Stack>

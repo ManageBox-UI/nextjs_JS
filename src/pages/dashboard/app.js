@@ -10,33 +10,17 @@ import { _appFeatured, _appAuthors, _appInstalled, _appRelated, _appInvoices } f
 // components
 import Page from '../../components/Page';
 // sections
-import {
-  AppWidget,
-  AppWelcome,
-  AppFeatured,
-  AppNewInvoice,
-  AppTopAuthors,
-  AppTopRelated,
-  AppAreaInstalled,
-  AppWidgetSummary,
-  AppCurrentDownload,
-  AppTopInstalledCountries,
-} from '../../sections/@dashboard/general/app';
+import { AppNewInvoice, AppWidgetSummary } from '../../sections/@dashboard/general/app';
 import {
   BookingReservationStats,
   BookingTotalIncomes,
-  BookingCheckInWidgets,
   BookingBookedRoom,
 } from '../../sections/@dashboard/general/booking';
-import { _bookings, _bookingNew, _bookingsOverview, _bookingReview } from '../../_mock';
 import { AnalyticsCurrentVisits } from '../../sections/@dashboard/general/analytics';
 // assets
-import { SeoIllustration } from '../../assets';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { from } from 'stylis';
-import { color } from '@mui/system';
 // ----------------------------------------------------------------------
 
 GeneralApp.getLayout = function getLayout(page) {
@@ -51,7 +35,7 @@ export default function GeneralApp() {
   const { themeStretch } = useSettings();
   const fetcher = (url) =>
     axios
-      .get(url,{headers:{Authorization: 'Bearer ' + localStorage.getItem('accessToken')}})
+      .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
       .then((res) => res.data);
   const { data: totalAtm, error: totalAtmError } = useSWR(
     `${process.env.API_URL}/services/GetWidgetContent?WidgetId=ToplamAtm`,
@@ -93,9 +77,9 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=KlimaDurumuProgress',
     fetcher
   );
-useEffect(()=>{
-  console.log(localStorage.getItem('accessToken'))
-},[localStorage.getItem('accessToken')])
+  useEffect(() => {
+    console.log(localStorage.getItem('accessToken'));
+  }, [localStorage.getItem('accessToken')]);
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -104,10 +88,10 @@ useEffect(()=>{
             <Grid item xs={12} md={3}>
               <AppWidgetSummary
                 title={totalAtm.label || ''}
-                total={totalAtm.data.field}
-                chartColor={theme.palette.chart.red[0]}
-                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                subheader={totalAtm.data.desc}
+                total={totalAtm.data.field || ''}
+                chartColor={theme.palette.chart.red[0] || ''}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31] || ''}
+                subheader={totalAtm.data.desc || ''}
               />
             </Grid>
           ) : null}
@@ -115,11 +99,11 @@ useEffect(()=>{
           {izlenen ? (
             <Grid item xs={12} md={3}>
               <AppWidgetSummary
-                title={izlenen.label}
-                total={izlenen.data.field}
-                chartColor={theme.palette.chart.red[0]}
-                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                subheader={izlenen.data.desc}
+                title={izlenen.label || ''}
+                total={izlenen.data.field || ''}
+                chartColor={theme.palette.chart.red[0] || ''}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31] || ''}
+                subheader={izlenen.data.desc || ''}
               />
             </Grid>
           ) : null}
@@ -127,11 +111,11 @@ useEffect(()=>{
           {online ? (
             <Grid item xs={12} md={3}>
               <AppWidgetSummary
-                title={online.label}
-                total={online.data.field}
-                chartColor={theme.palette.chart.green[0]}
-                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                subheader={online.data.desc}
+                title={online.label || ''}
+                total={online.data.field || ''}
+                chartColor={theme.palette.chart.green[0] || ''}
+                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31] || ''}
+                subheader={online.data.desc || ''}
               />
             </Grid>
           ) : null}

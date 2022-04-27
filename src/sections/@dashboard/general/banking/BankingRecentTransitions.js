@@ -36,6 +36,7 @@ BankingRecentTransitions.propTypes = {
   tableLabels: PropTypes.array.isRequired,
 };
 
+
 export default function BankingRecentTransitions({ title, subheader, tableLabels, tableData, ...other }) {
   return (
     <Card {...other}>

@@ -5,8 +5,7 @@ import Label from '../../../components/Label';
 import Iconify from '../../../components/Iconify';
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import Icon from '@mui/material/Icon';
-import { AccountBalance, Atm, AdUnits, PeopleOutlined,UploadFile} from '@mui/icons-material';
-
+import { AccountBalance, Atm, AdUnits, PeopleOutlined, UploadFile } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -19,13 +18,13 @@ const ICONS = {
   mail: getIcon('ic_mail'),
   user: getIcon('ic_user'),
   kanban: getIcon('ic_kanban'),
-  banking: <PeopleOutlined/>,
-  booking:<UploadFile/>,
+  banking: <PeopleOutlined />,
+  booking: <UploadFile />,
   invoice: getIcon('ic_invoice'),
   calendar: getIcon('ic_calendar'),
-  ecommerce:<AccountBalance/>,
-  analytics: <AdUnits/>,
-  dashboard: <Atm fontSize='24px'/>,
+  ecommerce: <AccountBalance />,
+  analytics: <AdUnits />,
+  dashboard: <Atm fontSize="24px" />,
   menuItem: getIcon('ic_menu_item'),
 };
 
@@ -35,8 +34,26 @@ const navConfig = [
   {
     subheader: 'general',
     items: [
-      { title: 'ATM', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
-      { title: 'ŞUBE', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
+      {
+        title: 'ATM',
+        path: PATH_DASHBOARD.general.app,
+        icon: ICONS.dashboard,
+        children: [
+          { title: 'ATM Özet Ekranı', path: PATH_DASHBOARD.general.app,},
+          { title: "ATM'ler", path: PATH_DASHBOARD.general.atmler},
+          { title: 'ATM Tanımları', path: PATH_DASHBOARD.user.profile },
+        ],
+      },
+      {
+        title: 'ŞUBE',
+        path: PATH_DASHBOARD.general.ecommerce,
+        icon: ICONS.ecommerce,
+        children: [
+          { title: 'Şube Özet Ekranı', path: PATH_DASHBOARD.user.profile },
+          { title: "Şubeler", path: PATH_DASHBOARD.user.profile },
+          { title: 'Şube Tanımları', path: PATH_DASHBOARD.user.profile },
+        ],
+      },
       { title: 'Cihazlar', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
       { title: 'Kullanıcılar', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
       { title: 'İçe Aktar', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
