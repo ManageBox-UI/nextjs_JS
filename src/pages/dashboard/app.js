@@ -77,9 +77,13 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetWidgetContent?WidgetId=KlimaDurumuProgress',
     fetcher
   );
+  const { data: atmler, error: atmlerError } = useSWR(
+    'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
+    fetcher
+  );
   useEffect(() => {
-    console.log(localStorage.getItem('accessToken'));
-  }, [localStorage.getItem('accessToken')]);
+     console.log(localStorage.getItem('accessToken'));
+   }, [localStorage.getItem('accessToken')]);
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>

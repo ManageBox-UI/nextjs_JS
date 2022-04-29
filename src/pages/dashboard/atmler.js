@@ -1,248 +1,439 @@
+import sumBy from 'lodash/sumBy';
+import { useState } from 'react';
+// next
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid, Stack, Button, Map, forEach, arrays } from '@mui/material';
-import useAuth from '../../hooks/useAuth';
+import {
+  Box,
+  Tab,
+  Tabs,
+  Card,
+  Table,
+  Stack,
+  Switch,
+  Button,
+  Tooltip,
+  Divider,
+  TableBody,
+  Container,
+  IconButton,
+  TableContainer,
+  TablePagination,
+  FormControlLabel,
+} from '@mui/material';
+// routes
+import { PATH_DASHBOARD } from '../../routes/paths';
+// hooks
+import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
+import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
+// _mock_
 // layouts
 import Layout from '../../layouts';
-// _mock_
-import { _appFeatured, _appAuthors, _appInstalled, _appRelated, _appInvoices } from '../../_mock';
 // components
 import Page from '../../components/Page';
+import Label from '../../components/Label';
+import Iconify from '../../components/Iconify';
+import Scrollbar from '../../components/Scrollbar';
+import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 // sections
-import { Table } from '../../sections/@dashboard/general/atmler';
-import {
-  BookingReservationStats,
-  BookingTotalIncomes,
-  BookingBookedRoom,
-} from '../../sections/@dashboard/general/booking';
-import { AnalyticsCurrentVisits } from '../../sections/@dashboard/general/analytics';
-// assets
+import InvoiceAnalytic from '../../sections/@dashboard/atmler/InvoiceAnalytic';
+import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/atmler/list';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect} from 'react';
 import useSWR from 'swr';
 // ----------------------------------------------------------------------
 
-GeneralApp.getLayout = function getLayout(page) {
+const SERVICE_OPTIONS = [
+  'all',
+  'full stack development',
+  'backend development',
+  'ui design',
+  'ui/ux design',
+  'front end development',
+];
+
+const TABLE_HEAD = [
+  { id: 'invoiceNumber', label: 'Atm Kodu', align: 'left' },
+  { id: 'createDate', label: 'Atm Adı', align: 'left' },
+  { id: 'dueDate', label: 'İzleme Durumu', align: 'left' },
+  { id: 'price', label: 'Alarm', align: 'center', width: 140 },
+  { id: 'sent', label: 'Bölge', align: 'center', width: 140 },
+  { id: 'status', label: 'İl', align: 'left' },
+  { id: 'status', label: 'İlçe', align: 'left' },
+  { id: '' },
+];
+
+// ----------------------------------------------------------------------
+
+InvoiceList.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };
 
 // ----------------------------------------------------------------------
 
-export default function GeneralApp() {
-  const { user } = useAuth();
-  const theme = useTheme();
-  const { themeStretch } = useSettings();
+export default function InvoiceList() {
   const fetcher = (url) =>
-    axios
-      .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
-      .then((res) => res.data);
-  const { data: totalAtm, error: totalAtmError } = useSWR(
-    `${process.env.API_URL}/services/GetWidgetContent?WidgetId=ToplamAtm`,
-    fetcher
-  );
-  const { data: atmler, error: atmlerError } = useSWR(
-    'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
-    fetcher
-  );
+  axios
+    .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
+    .then((res) => res.data);
+const { data: atmler, error: atmlerError } = useSWR(
+  'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
+  fetcher
+);
+console.log(atmler);
+  const theme = useTheme();
+
+  const { themeStretch } = useSettings();
+
+  const { push } = useRouter();
+
+  const {
+    dense,
+    page,
+    order,
+    orderBy,
+    rowsPerPage,
+    setPage,
+    //
+    selected,
+    setSelected,
+    onSelectRow,
+    onSelectAllRows,
+    //
+    onSort,
+    onChangeDense,
+    onChangePage,
+    onChangeRowsPerPage,
+  } = useTable({ defaultOrderBy: 'createDate' });
+
+  
+
+  const [filterName, setFilterName] = useState('');
+
+  const [filterService, setFilterService] = useState('all');
+
+  const [filterStartDate, setFilterStartDate] = useState(null);
+
+  const [filterEndDate, setFilterEndDate] = useState(null);
+
+  const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
+
+  const handleFilterName = (filterName) => {
+    setFilterName(filterName);
+    setPage(0);
+  };
+
+  const handleFilterService = (event) => {
+    setFilterService(event.target.value);
+  };
+
+  const handleDeleteRow = (id) => {
+    const deleteRow = atmler.filter((row) => row.id !== id);
+    setSelected([]);
+   
+  };
+
+  const handleDeleteRows = (selected) => {
+    const deleteRows = atmler.filter((row) => !selected.includes(row.id));
+    setSelected([]);
+    
+  };
+
+  const handleEditRow = (id) => {
+    push(PATH_DASHBOARD.invoice.edit(id));
+  };
+
+  const handleViewRow = (id) => {
+    push(PATH_DASHBOARD.invoice.view(id));
+  };
+
+  const dataFiltered = applySortFilter({
+    atmler,
+    comparator: getComparator(order, orderBy),
+    filterName,
+    filterService,
+    filterStatus,
+    filterStartDate,
+    filterEndDate,
+  });
+
+  const denseHeight = dense ? 56 : 76;
 
 
-  useEffect(() => {
-    console.log(localStorage.getItem('accessToken'));
-  }, [localStorage.getItem('accessToken')]);
+  const getLengthByStatus = (status) => atmler?.filter((item) => item.status === status).length;
+
+  const getTotalPriceByStatus = (status) =>
+    sumBy(
+      atmler?.filter((item) => item.status === status),
+      'totalPrice'
+    );
+
+  const getPercentByStatus = (status) => (getLengthByStatus(status) / atmler.length) * 100;
+
+  const TABS = [
+    { value: 'all', label: 'All', color: 'info', count: atmler?.length },
+    { value: 'paid', label: 'Çevirimiçi', color: 'success', count: getLengthByStatus('paid') },
+    { value: 'unpaid', label: 'Kurulmamış', color: 'warning', count: getLengthByStatus('unpaid') },
+    { value: 'overdue', label: 'Çevirimdışı', color: 'error', count: getLengthByStatus('overdue') },
+    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+  ];
+
   return (
-    <Page title="General: ATMLER">
-      <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
-        {atmler?(
-            <Grid item xs={12} lg={14}>
-            <Table
-              title="ATMLER"
-              tableData={atmler}
-              tableLabels={[
-                { id: 'id', label: 'ATM Kodu' },
-                { id: 'category', label: 'ATM Adı' },
-                { id: 'price', label: 'İzleme Durumu' },
-                { id: 'status', label: 'Bölge' },
-                { id: 'status', label: 'Alarm' },
-                { id: 'status', label: 'İl' },
-                { id: 'status', label: 'İlçe' },
-                { id: '' },
-              ]}
-            />
-          </Grid>
-        ):null}
-
-          {/* {totalAtm ? (
-            <Grid item xs={12} md={3}>
-              <AppWidgetSummary
-                title={totalAtm.label || ''}
-                total={totalAtm.data.field || ''}
-                chartColor={theme.palette.chart.red[0] || ''}
-                chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31] || ''}
-                subheader={totalAtm.data.desc || ''}
+    <Page title="Invoice: List">
+      <Container maxWidth={themeStretch ? false : 'lg'}>
+        <HeaderBreadcrumbs
+          heading="ATMLER "
+          links={[
+            { name: 'Atm Özet Ekranı', href: PATH_DASHBOARD.root },
+            { name: 'Invoices', href: PATH_DASHBOARD.invoice.root },
+            { name: 'List' },
+          ]}
+        />
+{atmler?(
+  <>
+          <Card sx={{ mb: 5 }}>
+          <Scrollbar>
+            <Stack
+              direction="row"
+              divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
+              sx={{ py: 2 }}
+            >
+              <InvoiceAnalytic
+                title="Total"
+                total={atmler.length}
+                percent={100}
+                price={sumBy(atmler, 'totalPrice')}
+                icon="ic:round-receipt"
+                color={theme.palette.info.main}
               />
-            </Grid>
-          ) : null} */}
-
-          {/* {aydinlatmaBar ? (
-            <Grid item xs={12} md={4}>
-              <BookingReservationStats
-                title={aydinlatmaBar.label}
-                // subheader="(+43% Check In | +12% Check Out) than last year"
-                data={aydinlatmaBar.data}
+              <InvoiceAnalytic
+                title="Çevirimiçi"
+                total={getLengthByStatus(atmler.IsActive)}
+                percent={getPercentByStatus(atmler.IsActive)}
+                price={getTotalPriceByStatus('paid')}
+                icon="eva:checkmark-circle-2-fill"
+                color={theme.palette.success.main}
               />
-            </Grid>
-          ) : null} */}
-
-          {/* {enerjiLine ? (
-            <Grid item xs={12} md={4}>
-              <BookingTotalIncomes
-                title={enerjiLine.label}
-                total={enerjiLine.data.title}
-                percent={enerjiLine.data.percentage}
-                chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
-                subheader={enerjiLine.data.period}
+              <InvoiceAnalytic
+                title="Kurulmamış"
+                total={getLengthByStatus('unpaid')}
+                percent={getPercentByStatus('unpaid')}
+                price={getTotalPriceByStatus('unpaid')}
+                icon="eva:clock-fill"
+                color={theme.palette.warning.main}
               />
-            </Grid>
-          ) : null} */}
-
-          {/* {pieAydinlatma ? (
-            <Grid item xs={12} md={4} lg={4}>
-              <AnalyticsCurrentVisits
-                title={pieAydinlatma.label}
-                chartData={pieAydinlatma.data}
-                chartColors={[
-                  theme.palette.primary.main,
-                  theme.palette.chart.blue[0],
-                  theme.palette.chart.violet[0],
-                  theme.palette.chart.yellow[0],
-                ]}
+              <InvoiceAnalytic
+                title="Çevirimdışı"
+                total={getLengthByStatus('overdue')}
+                percent={getPercentByStatus('overdue')}
+                price={getTotalPriceByStatus('overdue')}
+                icon="eva:bell-fill"
+                color={theme.palette.error.main}
               />
-            </Grid>
-          ) : null} */}
-
-          {/* {upsDurumu ? (
-            <Grid item xs={12} md={4}>
-              <BookingBookedRoom title={upsDurumu.label} data={upsDurumu.data} subheader={upsDurumu.desc} />
-            </Grid>
-          ) : null}
-
-          {aydinlatmaProsses ? (
-            <Grid item xs={12} md={4}>
-              <BookingBookedRoom
-                title={aydinlatmaProsses.label}
-                data={aydinlatmaProsses.data}
-                subheader={aydinlatmaProsses.desc}
+              <InvoiceAnalytic
+                title="Draft"
+                total={getLengthByStatus('draft')}
+                percent={getPercentByStatus('draft')}
+                price={getTotalPriceByStatus('draft')}
+                icon="eva:file-fill"
+                color={theme.palette.text.secondary}
               />
-            </Grid>
-          ) : null}
-
-          {klimaProsses ? (
-            <Grid item xs={12} md={4}>
-              <BookingBookedRoom title={klimaProsses.label} data={klimaProsses.data} subheader={klimaProsses.desc} />
-            </Grid>
-          ) : null} */}
-
-          {/* {pieAydinlatma?(
-  pieAydinlatma.data.map((data , i) =>(
-    <Grid item xs={12} md={6} key={i}lg={4}>
-    <AnalyticsCurrentVisits
-      title={pieAydinlatma.label}
-      chartData={[
-        { label: data.key, value:data.field},
-      ]}
-      chartColors={[
-        theme.palette.primary.main,
-        theme.palette.chart.blue[0],
-        theme.palette.chart.violet[0],
-        theme.palette.chart.yellow[0],
-      ]}
-    />
-  </Grid>)
-  )
-):null} */}
-
-          {/* 
-          <Grid item xs={12} md={4} lg={8}>
-            <AppAreaInstalled
-              title={enerjiLine?.label}
-              subheader="(+43%) than last year"
-              chartLabels={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']}
-              chartData={[
-                {
-                  year: '2019',
-                  data: [
-                    { name: 'Asia', data: [10, 41, 35, 51, 49, 62, 69, 91, 148] },
-                    { name: 'America', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
-                  ],
-                },
-                {
-                  year: '2020',
-                  data: [
-                    { name: 'Asia', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
-                    { name: 'America', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] },
-                  ],
-                },
-              ]}
-            />
-          </Grid> */}
-
-         
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppTopRelated title="Top Related Applications" list={_appRelated} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTopInstalledCountries title="Top Installed Countries" list={_appInstalled} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTopAuthors title="Top Authors" list={_appAuthors} />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <Stack spacing={3}>
-              <AppWidget title="Conversion" total={38566} icon={'eva:person-fill'} chartData={48} />
-              <AppWidget title="Applications" total={55566} icon={'eva:email-fill'} color="warning" chartData={75} />
             </Stack>
-          </Grid> */}
-          {/* <Grid item xs={12} md={8}>
-            {' '}
+          </Scrollbar>
+        </Card>
 
-            <AppWelcome
-              title={`Welcome back! \n ${user?.displayName}`}
-              description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
-              img={
-                <SeoIllustration
-                  sx={{
-                    p: 3,
-                    width: 360,
-                    margin: { xs: 'auto', md: 'inherit' },
-                  }}
+        <Card>
+          <Tabs
+            allowScrollButtonsMobile
+            variant="scrollable"
+            scrollButtons="auto"
+            value={filterStatus}
+            onChange={onFilterStatus}
+            sx={{ px: 2, bgcolor: 'background.neutral' }}
+          >
+            {TABS.map((tab) => (
+              <Tab
+                disableRipple
+                key={tab.value}
+                value={tab.value}
+                icon={<Label color={tab.color}> {tab.count} </Label>}
+                label={tab.label}
+              />
+            ))}
+          </Tabs>
+
+          <Divider />
+
+          <InvoiceTableToolbar
+            filterName={filterName}
+            filterService={filterService}
+            filterStartDate={filterStartDate}
+            filterEndDate={filterEndDate}
+            onFilterName={handleFilterName}
+            onFilterService={handleFilterService}
+            onFilterStartDate={(newValue) => {
+              setFilterStartDate(newValue);
+            }}
+            onFilterEndDate={(newValue) => {
+              setFilterEndDate(newValue);
+            }}
+            optionsService={SERVICE_OPTIONS}
+          />
+
+          <Scrollbar>
+            <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
+              {selected.length > 0 && (
+                <TableSelectedActions
+                  dense={dense}
+                  numSelected={selected.length}
+                  rowCount={atmler.length}
+                  onSelectAllRows={(checked) =>
+                    onSelectAllRows(
+                      checked,
+                      atmler.map((row) => row.id)
+                    )
+                  }
+                  actions={
+                    <Stack spacing={1} direction="row">
+                      <Tooltip title="Sent">
+                        <IconButton color="primary">
+                          <Iconify icon={'ic:round-send'} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Download">
+                        <IconButton color="primary">
+                          <Iconify icon={'eva:download-outline'} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Print">
+                        <IconButton color="primary">
+                          <Iconify icon={'eva:printer-fill'} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Delete">
+                        <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
+                          <Iconify icon={'eva:trash-2-outline'} />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                  }
                 />
-              }
-              action={<Button variant="contained">Go Now</Button>}
+              )}
+
+              <Table size={dense ? 'small' : 'medium'}>
+                <TableHeadCustom
+                  order={order}
+                  orderBy={orderBy}
+                  headLabel={TABLE_HEAD}
+                  rowCount={atmler.length}
+                  numSelected={selected.length}
+                  onSort={onSort}
+                  onSelectAllRows={(checked) =>
+                    onSelectAllRows(
+                      checked,
+                      atmler.map((row) => row.id)
+                    )
+                  }
+                />
+
+               {atmler?(
+                  <TableBody>
+                  {atmler.map((row) => (
+                    <InvoiceTableRow
+                      key={row.id}
+                      row={atmler}
+                      selected={selected.includes(row.id)}
+                      onSelectRow={() => onSelectRow(row.id)}
+                      onViewRow={() => handleViewRow(row.id)}
+                      onEditRow={() => handleEditRow(row.id)}
+                      onDeleteRow={() => handleDeleteRow(row.id)}
+                    />
+                  ))}
+
+                  <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmler.length)} />
+
+                </TableBody>
+               ):null}
+              </Table>
+            </TableContainer>
+          </Scrollbar>
+
+          <Box sx={{ position: 'relative' }}>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={dataFiltered.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={onChangePage}
+              onRowsPerPageChange={onChangeRowsPerPage}
             />
-          </Grid>
 
-          <Grid item xs={12} md={4}>
-            <AppFeatured list={_appFeatured} />
-          </Grid> */}
+            <FormControlLabel
+              control={<Switch checked={dense} onChange={onChangeDense} />}
+              label="Dense"
+              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+            />
+          </Box>
+        </Card>
+        </>
+):null}
 
-          {/* {chartDatas
-            ? chartDatas.map((data, i) => (
-                <Grid key={i} item xs={12} md={4}>
-                  <AppWidgetSummary
-                    title={"Toplam ATM ayısı"}
-                    total={chartDatas.length}
-                    chartColor={theme.palette.chart.red[0]}
-                    chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
-                  />
-                </Grid>
-              ))
-            : null}  */}
-        </Grid>
       </Container>
     </Page>
   );
+}
+
+// ----------------------------------------------------------------------
+
+function applySortFilter({
+  atmler,
+  comparator,
+  filterName,
+  filterStatus,
+  filterService,
+  filterStartDate,
+  filterEndDate,
+}) {
+  const stabilizedThis = atmler?.map((el, index) => [el, index]);
+
+  stabilizedThis?.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+
+  atmler = stabilizedThis?.map((el) => el[0]);
+
+  if (filterName) {
+    atmler = atmler?.filter(
+      (item) =>
+        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    );
+  }
+
+  if (filterStatus !== 'all') {
+    atmler = atmler?.filter((item) => item.status === filterStatus);
+  }
+
+  if (filterService !== 'all') {
+    atmler = atmler?.filter((item) => item.items.some((c) => c.service === filterService));
+  }
+
+  if (filterStartDate && filterEndDate) {
+    atmler = atmler?.filter(
+      (item) =>
+        item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
+    );
+  }
+
+  return atmler;
 }

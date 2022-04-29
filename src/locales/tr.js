@@ -41,6 +41,7 @@ const tr = {
     analytics: `analitik`,
     ecommerce: `e-ticaret`,
     management: `yönetim`,
+    all:`Hepsi`,
     menu_level_1: `menu level 1`,
     menu_level_2: `menu level 2`,
     menu_level_3: `menu level 3`,
