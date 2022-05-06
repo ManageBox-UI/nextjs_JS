@@ -12,6 +12,7 @@ import Label from '../../../../components/Label';
 import Avatar from '../../../../components/Avatar';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
+import NextLink from 'next/link';
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ InvoiceTableRow.propTypes = {
 export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { sent:NodeID, invoiceNumber:Name, createDate:IsActive, dueDate:AlarmPanel, status:Region, invoiceTo:City, totalPrice:Town } = row;
+  const { NodeID,Name, IsActive, AlarmPanel, Region, City, Town } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -51,28 +52,32 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
         </Avatar>
 
         <Stack>
+          
           <Typography variant="subtitle2" noWrap>
             {Name}
           </Typography>
 
-          <Link noWrap variant="body2" onClick={onViewRow} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
-            {`INV-${Name}`}
-          </Link>
+          <NextLink noWrap variant="body2" href={`/dashboard/details/${NodeID}`} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
+            {NodeID}
+          </NextLink>
         </Stack>
       </TableCell>
 
       <TableCell align="left">{Name}</TableCell>
-      <TableCell align="left">{Name}</TableCell>
+      <TableCell align="left">{IsActive}</TableCell>
 
-      <TableCell align="left">{Name}</TableCell>
+      <TableCell align="left">{AlarmPanel}</TableCell>
 
-      <TableCell align="center">{Name}</TableCell>
+      <TableCell align="center">{Region}</TableCell>
 
       <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
-        {Name}
+        {City}
+      </TableCell>
+      <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
+        {Town}
       </TableCell>
 
-      <TableCell align="left">
+      {/* <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
           color={
@@ -85,7 +90,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
         >
           {status}
         </Label>
-      </TableCell>
+      </TableCell> */}
 
       <TableCell align="right">
         <TableMoreMenu

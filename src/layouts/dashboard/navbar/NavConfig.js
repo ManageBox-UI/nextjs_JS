@@ -41,7 +41,7 @@ const navConfig = [
         children: [
           { title: 'ATM Özet Ekranı', path: PATH_DASHBOARD.general.app,},
           { title: "ATM'ler", path: PATH_DASHBOARD.general.atmler},
-          { title: 'ATM Tanımları', path: PATH_DASHBOARD.user.profile },
+          { title: 'ATM Tanımları', path: PATH_DASHBOARD.general.atmTanimlari },
         ],
       },
       {

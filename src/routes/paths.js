@@ -39,6 +39,9 @@ export const PATH_DASHBOARD = {
   general: {
     app: path(ROOTS_DASHBOARD, '/app'),
     atmler: path(ROOTS_DASHBOARD, '/atmler'),
+    view: (id) => path(ROOTS_DASHBOARD, `/atmler/${id}`),
+    edit: (id) => path(ROOTS_DASHBOARD, `/atmler/${id}/edit`),
+    atmTanimlari: path(ROOTS_DASHBOARD, '/atmTanimlari'),
 
     ecommerce: path(ROOTS_DASHBOARD, '/ecommerce'),
     analytics: path(ROOTS_DASHBOARD, '/analytics'),

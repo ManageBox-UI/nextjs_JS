@@ -43,7 +43,7 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 import InvoiceAnalytic from '../../sections/@dashboard/atmler/InvoiceAnalytic';
 import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/atmler/list';
 import axios from 'axios';
-import { useEffect} from 'react';
+import { useEffect } from 'react';
 import useSWR from 'swr';
 // ----------------------------------------------------------------------
 
@@ -77,19 +77,18 @@ InvoiceList.getLayout = function getLayout(page) {
 
 export default function InvoiceList() {
   const fetcher = (url) =>
-  axios
-    .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
-    .then((res) => res.data);
-const { data: atmler, error: atmlerError } = useSWR(
-  'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
-  fetcher
-);
-console.log(atmler);
+    axios
+      .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
+      .then((res) => res.data);
+  const { data: atmler, error: atmlerError } = useSWR(
+    'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
+    fetcher
+  );
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
 
-  const { push } = useRouter();
+  const router = useRouter();
 
   const {
     dense,
@@ -109,8 +108,6 @@ console.log(atmler);
     onChangePage,
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
-
-  
 
   const [filterName, setFilterName] = useState('');
 
@@ -134,21 +131,19 @@ console.log(atmler);
   const handleDeleteRow = (id) => {
     const deleteRow = atmler.filter((row) => row.id !== id);
     setSelected([]);
-   
   };
 
   const handleDeleteRows = (selected) => {
     const deleteRows = atmler.filter((row) => !selected.includes(row.id));
     setSelected([]);
-    
   };
 
   const handleEditRow = (id) => {
-    push(PATH_DASHBOARD.invoice.edit(id));
+    router.push(PATH_DASHBOARD.invoice.edit(id));
   };
 
   const handleViewRow = (id) => {
-    push(PATH_DASHBOARD.invoice.view(id));
+    router.push(`/dashboard/invoices?id=${id}`);
   };
 
   const dataFiltered = applySortFilter({
@@ -162,7 +157,6 @@ console.log(atmler);
   });
 
   const denseHeight = dense ? 56 : 76;
-
 
   const getLengthByStatus = (status) => atmler?.filter((item) => item.status === status).length;
 
@@ -193,199 +187,189 @@ console.log(atmler);
             { name: 'List' },
           ]}
         />
-{atmler?(
-  <>
-          <Card sx={{ mb: 5 }}>
-          <Scrollbar>
-            <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
-              sx={{ py: 2 }}
-            >
-              <InvoiceAnalytic
-                title="Total"
-                total={atmler.length}
-                percent={100}
-                price={sumBy(atmler, 'totalPrice')}
-                icon="ic:round-receipt"
-                color={theme.palette.info.main}
+        {atmler ? (
+          <>
+            <Card sx={{ mb: 5 }}>
+              <Scrollbar>
+                <Stack
+                  direction="row"
+                  divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
+                  sx={{ py: 2 }}
+                >
+                  <InvoiceAnalytic
+                    title="Total"
+                    total={atmler.length}
+                    percent={100}
+                    price={sumBy(atmler, 'totalPrice')}
+                    icon="ic:round-receipt"
+                    color={theme.palette.info.main}
+                  />
+                  <InvoiceAnalytic
+                    title="Çevirimiçi"
+                    total={getLengthByStatus(atmler.IsActive)}
+                    percent={getPercentByStatus(atmler.IsActive)}
+                    price={getTotalPriceByStatus('paid')}
+                    icon="eva:checkmark-circle-2-fill"
+                    color={theme.palette.success.main}
+                  />
+                  <InvoiceAnalytic
+                    title="Kurulmamış"
+                    total={getLengthByStatus('unpaid')}
+                    percent={getPercentByStatus('unpaid')}
+                    price={getTotalPriceByStatus('unpaid')}
+                    icon="eva:clock-fill"
+                    color={theme.palette.warning.main}
+                  />
+                  <InvoiceAnalytic
+                    title="Çevirimdışı"
+                    total={getLengthByStatus('overdue')}
+                    percent={getPercentByStatus('overdue')}
+                    price={getTotalPriceByStatus('overdue')}
+                    icon="eva:bell-fill"
+                    color={theme.palette.error.main}
+                  />
+                </Stack>
+              </Scrollbar>
+            </Card>
+
+            <Card>
+              <Tabs
+                allowScrollButtonsMobile
+                variant="scrollable"
+                scrollButtons="auto"
+                value={filterStatus}
+                onChange={onFilterStatus}
+                sx={{ px: 2, bgcolor: 'background.neutral' }}
+              >
+                {TABS.map((tab) => (
+                  <Tab
+                    disableRipple
+                    key={tab.value}
+                    value={tab.value}
+                    icon={<Label color={tab.color}> {tab.count} </Label>}
+                    label={tab.label}
+                  />
+                ))}
+              </Tabs>
+
+              <Divider />
+
+              <InvoiceTableToolbar
+                filterName={filterName}
+                filterService={filterService}
+                filterStartDate={filterStartDate}
+                filterEndDate={filterEndDate}
+                onFilterName={handleFilterName}
+                onFilterService={handleFilterService}
+                onFilterStartDate={(newValue) => {
+                  setFilterStartDate(newValue);
+                }}
+                onFilterEndDate={(newValue) => {
+                  setFilterEndDate(newValue);
+                }}
+                optionsService={SERVICE_OPTIONS}
               />
-              <InvoiceAnalytic
-                title="Çevirimiçi"
-                total={getLengthByStatus(atmler.IsActive)}
-                percent={getPercentByStatus(atmler.IsActive)}
-                price={getTotalPriceByStatus('paid')}
-                icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Kurulmamış"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
-                price={getTotalPriceByStatus('unpaid')}
-                icon="eva:clock-fill"
-                color={theme.palette.warning.main}
-              />
-              <InvoiceAnalytic
-                title="Çevirimdışı"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.error.main}
-              />
-              <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.text.secondary}
-              />
-            </Stack>
-          </Scrollbar>
-        </Card>
 
-        <Card>
-          <Tabs
-            allowScrollButtonsMobile
-            variant="scrollable"
-            scrollButtons="auto"
-            value={filterStatus}
-            onChange={onFilterStatus}
-            sx={{ px: 2, bgcolor: 'background.neutral' }}
-          >
-            {TABS.map((tab) => (
-              <Tab
-                disableRipple
-                key={tab.value}
-                value={tab.value}
-                icon={<Label color={tab.color}> {tab.count} </Label>}
-                label={tab.label}
-              />
-            ))}
-          </Tabs>
+              <Scrollbar>
+                <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
+                  {selected.length > 0 && (
+                    <TableSelectedActions
+                      dense={dense}
+                      numSelected={selected.length}
+                      rowCount={atmler.length}
+                      onSelectAllRows={(checked) =>
+                        onSelectAllRows(
+                          checked,
+                          atmler.map((row) => row.id)
+                        )
+                      }
+                      actions={
+                        <Stack spacing={1} direction="row">
+                          <Tooltip title="CSV">
+                            <IconButton color="primary">
+                              <Iconify icon={'bi:filetype-csv'} />
+                            </IconButton>
+                          </Tooltip>
 
-          <Divider />
+                          <Tooltip title="PDF">
+                            <IconButton color="primary">
+                              <Iconify icon={'codicon:file-pdf'} />
+                            </IconButton>
+                          </Tooltip>
+                          
+                          <Tooltip title="Güncelle">
+                            <IconButton color="primary">
+                              <Iconify icon={'clarity:update-line'} />
+                            </IconButton>
+                          </Tooltip>
 
-          <InvoiceTableToolbar
-            filterName={filterName}
-            filterService={filterService}
-            filterStartDate={filterStartDate}
-            filterEndDate={filterEndDate}
-            onFilterName={handleFilterName}
-            onFilterService={handleFilterService}
-            onFilterStartDate={(newValue) => {
-              setFilterStartDate(newValue);
-            }}
-            onFilterEndDate={(newValue) => {
-              setFilterEndDate(newValue);
-            }}
-            optionsService={SERVICE_OPTIONS}
-          />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              {selected.length > 0 && (
-                <TableSelectedActions
-                  dense={dense}
-                  numSelected={selected.length}
-                  rowCount={atmler.length}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      atmler.map((row) => row.id)
-                    )
-                  }
-                  actions={
-                    <Stack spacing={1} direction="row">
-                      <Tooltip title="Sent">
-                        <IconButton color="primary">
-                          <Iconify icon={'ic:round-send'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Download">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:download-outline'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Print">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:printer-fill'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Delete">
-                        <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                          <Iconify icon={'eva:trash-2-outline'} />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  }
-                />
-              )}
-
-              <Table size={dense ? 'small' : 'medium'}>
-                <TableHeadCustom
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={atmler.length}
-                  numSelected={selected.length}
-                  onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      atmler.map((row) => row.id)
-                    )
-                  }
-                />
-
-               {atmler?(
-                  <TableBody>
-                  {atmler.map((row) => (
-                    <InvoiceTableRow
-                      key={row.id}
-                      row={atmler}
-                      selected={selected.includes(row.id)}
-                      onSelectRow={() => onSelectRow(row.id)}
-                      onViewRow={() => handleViewRow(row.id)}
-                      onEditRow={() => handleEditRow(row.id)}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
+                          <Tooltip title="Sil">
+                            <IconButton color="error" onClick={() => handleDeleteRows(selected)}>
+                              <Iconify icon={'eva:trash-2-outline'} />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      }
                     />
-                  ))}
+                  )}
 
-                  <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmler.length)} />
+                  <Table size={dense ? 'small' : 'medium'}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={atmler.length}
+                      numSelected={selected.length}
+                      onSort={onSort}
+                      onSelectAllRows={(checked) =>
+                        onSelectAllRows(
+                          checked,
+                          atmler.map((row) => row.id)
+                        )
+                      }
+                    />
 
-                </TableBody>
-               ):null}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                    {atmler ? (
+                      <TableBody>
+                        {atmler.map((row) => (
+                          <InvoiceTableRow
+                            key={row.id}
+                            row={row}
+                            selected={selected.includes(row.id)}
+                            onSelectRow={() => onSelectRow(row.id)}
+                            onViewRow={() => handleViewRow(row.id)}
+                            onEditRow={() => handleEditRow(row.id)}
+                            onDeleteRow={() => handleDeleteRow(row.id)}
+                          />
+                        ))}
 
-          <Box sx={{ position: 'relative' }}>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={dataFiltered.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
+                        <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmler.length)} />
+                      </TableBody>
+                    ) : null}
+                  </Table>
+                </TableContainer>
+              </Scrollbar>
 
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="Dense"
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
-            />
-          </Box>
-        </Card>
-        </>
-):null}
+              <Box sx={{ position: 'relative' }}>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={dataFiltered.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={onChangePage}
+                  onRowsPerPageChange={onChangeRowsPerPage}
+                />
 
+                <FormControlLabel
+                  control={<Switch checked={dense} onChange={onChangeDense} />}
+                  label="Dense"
+                  sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+                />
+              </Box>
+            </Card>
+          </>
+        ) : null}
       </Container>
     </Page>
   );
@@ -415,8 +399,8 @@ function applySortFilter({
   if (filterName) {
     atmler = atmler?.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

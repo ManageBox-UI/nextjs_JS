@@ -21,6 +21,7 @@ import { AnalyticsCurrentVisits } from '../../sections/@dashboard/general/analyt
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
+
 // ----------------------------------------------------------------------
 
 GeneralApp.getLayout = function getLayout(page) {
@@ -30,6 +31,7 @@ GeneralApp.getLayout = function getLayout(page) {
 // ----------------------------------------------------------------------
 
 export default function GeneralApp() {
+  
   const { user } = useAuth();
   const theme = useTheme();
   const { themeStretch } = useSettings();
