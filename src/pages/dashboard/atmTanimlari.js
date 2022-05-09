@@ -79,11 +79,13 @@ export default function AtmTanimlari() {
   const fetcher = (url) =>
     axios
       .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
+      .put(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
       .then((res) => res.data);
   const { data: atmler, error: atmlerError } = useSWR(
     'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
     fetcher
   );
+  
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
