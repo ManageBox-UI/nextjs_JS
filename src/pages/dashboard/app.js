@@ -1,16 +1,15 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid, Stack, Button, Map, forEach, arrays } from '@mui/material';
+import { Container, Grid, } from '@mui/material';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 // layouts
 import Layout from '../../layouts';
 // _mock_
-import { _appFeatured, _appAuthors, _appInstalled, _appRelated, _appInvoices } from '../../_mock';
 // components
 import Page from '../../components/Page';
 // sections
-import { AppNewInvoice, AppWidgetSummary } from '../../sections/@dashboard/general/app';
+import { AppWidgetSummary } from '../../sections/@dashboard/general/app';
 import {
   BookingReservationStats,
   BookingTotalIncomes,

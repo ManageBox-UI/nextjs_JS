@@ -1,7 +1,7 @@
 import sumBy from 'lodash/sumBy';
 import { useState } from 'react';
 // next
-import NextLink from 'next/link';
+
 import { useRouter } from 'next/router';
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -68,7 +68,6 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-
 InvoiceList.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };
@@ -198,7 +197,7 @@ export default function InvoiceList() {
   }
   const postTableData = (id) =>{
     console.log(id);
-    return;
+  
     // axios.post('https://13.79.156.47:8002/services/EditTable', {
     //   TableID:id,
     //   OP:opData ,

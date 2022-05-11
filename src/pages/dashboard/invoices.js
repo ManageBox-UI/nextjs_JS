@@ -48,7 +48,7 @@ Invoices.getLayout = function getLayout(page) {
   };
 
 
-const Invoices = () => {
+  export default function Invoices() {
   const { themeStretch } = useSettings();
 
   const { user } = useAuth();
@@ -127,4 +127,3 @@ const Invoices = () => {
   )
 
 }
-export default Invoices;

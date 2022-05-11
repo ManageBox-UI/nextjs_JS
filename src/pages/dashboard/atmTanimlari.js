@@ -43,7 +43,7 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 import InvoiceAnalytic from '../../sections/@dashboard/atmTanimlari/InvoiceAnalytic';
 import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/atmTanimlari/list';
 import axios from 'axios';
-import { useEffect } from 'react';
+
 import useSWR from 'swr';
 // ----------------------------------------------------------------------
 

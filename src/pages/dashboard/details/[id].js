@@ -48,14 +48,6 @@ const TabsWrapperStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
-export async function getServerSideProps(context) {
-    const id = context.query.id;
-    return {
-      props: {
-        id:id
-      }, // will be passed to the page component as props
-    }
-  }
 Invoices.getLayout = function getLayout(page) {
     return <Layout >{page}</Layout>;
   };
