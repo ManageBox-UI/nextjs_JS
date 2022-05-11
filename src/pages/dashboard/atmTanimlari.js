@@ -45,16 +45,10 @@ import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/
 import axios from 'axios';
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import EditModal from '../../components/EditModal';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Atm Kodu', align: 'left' },
@@ -63,7 +57,6 @@ const TABLE_HEAD = [
   { id: 'price', label: 'Bölge', align: 'center', width: 140 },
   { id: 'sent', label: 'İl', align: 'center', width: 140 },
   { id: 'status', label: 'İlçe', align: 'left' },
-  { id: 'status', label: 'Adres', align: 'left' },
   { id: 'status', label: 'Enlem', align: 'left' },
   { id: 'status', label: 'Boylam', align: 'left' },
   { id: 'status', label: 'MBX IP', align: 'left' },
@@ -84,7 +77,7 @@ export default function AtmTanimlari() {
       .get(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
       .put(url, { headers: { Authorization: 'Bearer ' + localStorage.getItem('accessToken') } })
       .then((res) => res.data);
-  const { data: atmler, error: atmlerError } = useSWR(
+  const { data: atmTanimlari, error: atmTanimlariError } = useSWR(
     'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
     fetcher
   );
@@ -123,6 +116,7 @@ export default function AtmTanimlari() {
   const [filterStartDate, setFilterStartDate] = useState(null);
 
   const [filterEndDate, setFilterEndDate] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
@@ -136,12 +130,12 @@ export default function AtmTanimlari() {
   };
 
   const handleDeleteRow = (id) => {
-    const deleteRow = atmler.filter((row) => row.id !== id);
+    const deleteRow = atmTanimlari.filter((row) => row.id !== id);
     setSelected([]);
   };
 
   const handleDeleteRows = (selected) => {
-    const deleteRows = atmler.filter((row) => !selected.includes(row.id));
+    const deleteRows = atmTanimlari.filter((row) => !selected.includes(row.id));
     setSelected([]);
   };
 
@@ -154,7 +148,7 @@ export default function AtmTanimlari() {
   };
 
   const dataFiltered = applySortFilter({
-    atmler,
+    atmTanimlari,
     comparator: getComparator(order, orderBy),
     filterName,
     filterService,
@@ -165,18 +159,18 @@ export default function AtmTanimlari() {
 
   const denseHeight = dense ? 56 : 76;
 
-  const getLengthByStatus = (status) => atmler?.filter((item) => item.status === status).length;
+  const getLengthByStatus = (status) => atmTanimlari?.filter((item) => item.status === status).length;
 
   const getTotalPriceByStatus = (status) =>
     sumBy(
-      atmler?.filter((item) => item.status === status),
+      atmTanimlari?.filter((item) => item.status === status),
       'totalPrice'
     );
 
-  const getPercentByStatus = (status) => (getLengthByStatus(status) / atmler.length) * 100;
+  const getPercentByStatus = (status) => (getLengthByStatus(status) / atmTanimlari.length) * 100;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: atmler?.length },
+    { value: 'all', label: 'All', color: 'info', count: atmTanimlari?.length },
     { value: 'paid', label: 'Çevirimiçi', color: 'success', count: getLengthByStatus('paid') },
     { value: 'unpaid', label: 'Kurulmamış', color: 'warning', count: getLengthByStatus('unpaid') },
     { value: 'overdue', label: 'Çevirimdışı', color: 'error', count: getLengthByStatus('overdue') },
@@ -186,19 +180,13 @@ export default function AtmTanimlari() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="ATMLER "
+          heading="ATMLER TANIMLARI "
           links={[
            <></>
           ]}
-          action={
-            <NextLink href={PATH_DASHBOARD.invoice.new} passHref>
-              <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                ATM ekle
-              </Button>
-            </NextLink>
-          }
+         
         />
-        {atmler ? (
+        {atmTanimlari ? (
           <>
             <Card sx={{ mb: 5 }}>
               <Scrollbar>
@@ -209,16 +197,16 @@ export default function AtmTanimlari() {
                 >
                   <InvoiceAnalytic
                     title="Total"
-                    total={atmler.length}
+                    total={atmTanimlari.length}
                     percent={100}
-                    price={sumBy(atmler, 'totalPrice')}
+                    price={sumBy(atmTanimlari, 'totalPrice')}
                     icon="ic:round-receipt"
                     color={theme.palette.info.main}
                   />
                   <InvoiceAnalytic
                     title="Çevirimiçi"
-                    total={getLengthByStatus(atmler.IsActive)}
-                    percent={getPercentByStatus(atmler.IsActive)}
+                    total={getLengthByStatus(atmTanimlari.IsActive)}
+                    percent={getPercentByStatus(atmTanimlari.IsActive)}
                     price={getTotalPriceByStatus('paid')}
                     icon="eva:checkmark-circle-2-fill"
                     color={theme.palette.success.main}
@@ -278,27 +266,15 @@ export default function AtmTanimlari() {
                 onFilterEndDate={(newValue) => {
                   setFilterEndDate(newValue);
                 }}
-                optionsService={SERVICE_OPTIONS}
               />
 
               <Scrollbar>
                 <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-                  {selected.length > 0 && (
-                    <TableSelectedActions
-                      dense={dense}
-                      numSelected={selected.length}
-                      rowCount={atmler.length}
-                      onSelectAllRows={(checked) =>
-                        onSelectAllRows(
-                          checked,
-                          atmler.map((row) => row.id)
-                        )
-                      }
-                      actions={
-                        <Stack spacing={1} direction="row">
+                <Stack spacing={1} direction="row">
                           <Tooltip title="CSV">
                             <IconButton color="primary">
                               <Iconify icon={'bi:filetype-csv'} />
+                              
                             </IconButton>
                           </Tooltip>
 
@@ -307,7 +283,13 @@ export default function AtmTanimlari() {
                               <Iconify icon={'codicon:file-pdf'} />
                             </IconButton>
                           </Tooltip>
-                          
+                          <Tooltip title="Ekle">
+                            <IconButton color="primary">
+                              <Iconify icon={'carbon:add'} />
+                              <EditModal open={open} setOpen={setOpen} />
+                            </IconButton>
+                            
+                          </Tooltip>
                           <Tooltip title="Güncelle">
                             <IconButton color="primary">
                               <Iconify icon={'clarity:update-line'} />
@@ -320,6 +302,19 @@ export default function AtmTanimlari() {
                             </IconButton>
                           </Tooltip>
                         </Stack>
+                  {selected.length > 0 && (
+                    <TableSelectedActions
+                      dense={dense}
+                      numSelected={selected.length}
+                      rowCount={atmTanimlari.length}
+                      onSelectAllRows={(checked) =>
+                        onSelectAllRows(
+                          checked,
+                          atmTanimlari.map((row) => row.id)
+                        )
+                      }
+                      actions={
+                        <></>
                       }
                     />
                   )}
@@ -329,34 +324,37 @@ export default function AtmTanimlari() {
                       order={order}
                       orderBy={orderBy}
                       headLabel={TABLE_HEAD}
-                      rowCount={atmler.length}
+                      rowCount={atmTanimlari.length}
                       numSelected={selected.length}
                       onSort={onSort}
                       onSelectAllRows={(checked) =>
                         onSelectAllRows(
                           checked,
-                          atmler.map((row) => row.id)
+                          atmTanimlari.map((row) => row.id)
                         )
                       }
                     />
 
-                    {atmler ? (
+                    {atmTanimlari ? (
                       <TableBody>
-                        {atmler.map((row) => (
+                        {atmTanimlari.map((row) => (
                           <InvoiceTableRow
-                          key={row.NodeID}
+                          key={row.id}
                           row={row}
-                          selected={selected === row.NodeID ? true : false}
-                          onSelectRow={onSelectRow}
-                          onViewRow={handleViewRow}
-                          onEditRow={handleEditRow}
-                          onDeleteRow={handleDeleteRow}
+                          setOpen={setOpen}
+                            open={open}
+                          selected={selected.includes(row.NodeID)}
+                          onSelectRow={() => onSelectRow(row.NodeID)}
+                          onViewRow={() => handleViewRow(row.NodeID)}
+                          onEditRow={() => handleEditRow(row.NodeID)}
+                          onDeleteRow={()=>handleDeleteRow(row.NodeID)}
                           />
                         ))}
 
-                        <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmler.length)} />
+                        <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmTanimlari.length)} />
                       </TableBody>
                     ) : null}
+                      
                   </Table>
                 </TableContainer>
               </Scrollbar>
@@ -381,6 +379,7 @@ export default function AtmTanimlari() {
             </Card>
           </>
         ) : null}
+        <EditModal open={open} setOpen={setOpen} />
       </Container>
     </Page>
   );
@@ -389,7 +388,7 @@ export default function AtmTanimlari() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({
-  atmler,
+  atmTanimlari,
   comparator,
   filterName,
   filterStatus,
@@ -397,7 +396,7 @@ function applySortFilter({
   filterStartDate,
   filterEndDate,
 }) {
-  const stabilizedThis = atmler?.map((el, index) => [el, index]);
+  const stabilizedThis = atmTanimlari?.map((el, index) => [el, index]);
 
   stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -405,10 +404,10 @@ function applySortFilter({
     return a[1] - b[1];
   });
 
-  atmler = stabilizedThis?.map((el) => el[0]);
+  atmTanimlari = stabilizedThis?.map((el) => el[0]);
 
   if (filterName) {
-    atmler = atmler?.filter(
+    atmTanimlari = atmTanimlari?.filter(
       (item) =>
         item.Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.Name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
@@ -416,19 +415,19 @@ function applySortFilter({
   }
 
   if (filterStatus !== 'all') {
-    atmler = atmler?.filter((item) => item.status === filterStatus);
+    atmTanimlari = atmTanimlari?.filter((item) => item.status === filterStatus);
   }
 
   if (filterService !== 'all') {
-    atmler = atmler?.filter((item) => item.items.some((c) => c.service === filterService));
+    atmTanimlari = atmTanimlari?.filter((item) => item.items.some((c) => c.service === filterService));
   }
 
   if (filterStartDate && filterEndDate) {
-    atmler = atmler?.filter(
+    atmTanimlari = atmTanimlari?.filter(
       (item) =>
         item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
     );
   }
 
-  return atmler;
+  return atmTanimlari;
 }

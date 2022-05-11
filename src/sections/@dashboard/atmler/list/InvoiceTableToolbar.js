@@ -21,15 +21,7 @@ InvoiceTableToolbar.propTypes = {
 };
 
 export default function InvoiceTableToolbar({
-  optionsService,
-  filterStartDate,
-  filterEndDate,
-  filterName,
-  filterService,
-  onFilterName,
-  onFilterService,
-  onFilterStartDate,
-  onFilterEndDate,
+ 
   search,
   setSearch
 }) {

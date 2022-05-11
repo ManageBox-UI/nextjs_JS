@@ -4,10 +4,6 @@ import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem } from '@mui/material';
 // utils
-import { fDate } from '../../../../utils/formatTime';
-import createAvatar from '../../../../utils/createAvatar';
-import { fCurrency } from '../../../../utils/formatNumber';
-// components
 import Label from '../../../../components/Label';
 import Avatar from '../../../../components/Avatar';
 import Iconify from '../../../../components/Iconify';
@@ -64,9 +60,6 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
 
       <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
         {Town}
-      </TableCell>
-      <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
-        {Address}
       </TableCell>
       <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
         {Lattitude}
