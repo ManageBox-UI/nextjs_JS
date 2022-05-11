@@ -43,7 +43,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
+        <Checkbox checked={selected} onClick={() => onSelectRow(NodeID)} />
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>

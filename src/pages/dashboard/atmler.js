@@ -1,9 +1,6 @@
 import sumBy from 'lodash/sumBy';
 import { useState } from 'react';
-// next
-
 import { useRouter } from 'next/router';
-// @mui
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -46,16 +43,9 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import EditModal from '../../components/EditModal';
+import InvoiceCSV from '../../sections/@dashboard/atmler/details/InvoiceCSV';
+import { CSVLink } from 'react-csv';
 // ----------------------------------------------------------------------
-
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Atm Kodu', align: 'left' },
@@ -178,26 +168,29 @@ export default function InvoiceList() {
     { value: 'paid', label: 'Çevirimiçi', color: 'success', count: getLengthByStatus('paid') },
     { value: 'unpaid', label: 'Kurulmamış', color: 'warning', count: getLengthByStatus('unpaid') },
     { value: 'overdue', label: 'Çevirimdışı', color: 'error', count: getLengthByStatus('overdue') },
-    
   ];
-  useEffect(()=>{
-    const filteredAtm = atmler?.filter((row)=>{
-      if(!search){
+  useEffect(() => {
+    const filteredAtm = atmler?.filter((row) => {
+      if (!search) {
         return row;
       }
-      if(search && row.Name.includes(search)){
+      if (search && row.Name.includes(search)) {
         return row;
       }
-    })
-    setFilteredAtmData(filteredAtm)
-  },[search])
-  const getActives = () =>{
-    const actives = filteredAtmData.filter((row)=>{if(row.IsActive !== 1){return row}})
+    });
+    setFilteredAtmData(filteredAtm);
+  }, [search]);
+  const getActives = () => {
+    const actives = filteredAtmData.filter((row) => {
+      if (row.IsActive !== 1) {
+        return row;
+      }
+    });
     return actives.length;
-  }
-  const postTableData = (id) =>{
+  };
+  const postTableData = (id) => {
     console.log(id);
-  
+
     // axios.post('https://13.79.156.47:8002/services/EditTable', {
     //   TableID:id,
     //   OP:opData ,
@@ -209,16 +202,11 @@ export default function InvoiceList() {
     // .catch(function (error) {
     //   console.log(error);
     // });
-  }
+  };
   return (
     <Page title="Atm: Atmler">
       <Container maxWidth={themeStretch ? false : 'xlg'}>
-        <HeaderBreadcrumbs
-          heading="ATMLER "
-          links={[
-            <></>
-          ]}
-        />
+        <HeaderBreadcrumbs heading="ATMLER " links={[<></>]} />
         {filteredAtmData ? (
           <>
             <Card sx={{ mb: 5 }}>
@@ -283,7 +271,32 @@ export default function InvoiceList() {
                   />
                 ))}
               </Tabs>
-
+              <Stack spacing={1} direction="row">
+                <CSVLink data={atmler} asyncOnClick={true} onClick={open}>
+                  {atmler ? (
+                    <IconButton color="primary">
+                      <Iconify icon={'ph:file-csv'} />
+                    </IconButton>
+                  ) : (
+                    'Download me'
+                  )}
+                </CSVLink>
+                <Tooltip title="PDF">
+                  <IconButton color="primary">
+                    <Iconify icon={'codicon:file-pdf'} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Copy">
+                  <IconButton color="primary">
+                    <Iconify icon={'clarity:update-line'} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Yazdır">
+                  <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
+                    <Iconify icon={'cil:print'} />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
               <Divider />
 
               <InvoiceTableToolbar
@@ -301,7 +314,6 @@ export default function InvoiceList() {
                 onFilterEndDate={(newValue) => {
                   setFilterEndDate(newValue);
                 }}
-                optionsService={SERVICE_OPTIONS}
               />
 
               <Scrollbar>
@@ -317,33 +329,7 @@ export default function InvoiceList() {
                           filteredAtmData.map((row) => row.id)
                         )
                       }
-                      actions={
-                        <Stack spacing={1} direction="row">
-                          <Tooltip title="CSV">
-                            <IconButton color="primary">
-                              <Iconify icon={'bi:filetype-csv'} />
-                            </IconButton>
-                          </Tooltip>
-
-                          <Tooltip title="PDF">
-                            <IconButton color="primary">
-                              <Iconify icon={'codicon:file-pdf'} />
-                            </IconButton>
-                          </Tooltip>
-                          
-                          <Tooltip title="Copy">
-                            <IconButton color="primary">
-                              <Iconify icon={'clarity:update-line'} />
-                            </IconButton>
-                          </Tooltip>
-
-                          <Tooltip title="Yazdır">
-                            <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                              <Iconify icon={'cil:print'} />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
-                      }
+                      actions={<></>}
                     />
                   )}
 
@@ -365,23 +351,20 @@ export default function InvoiceList() {
 
                     {filteredAtmData ? (
                       <TableBody>
-                        {
-                    filteredAtmData?.map((row) => (
+                        {filteredAtmData?.map((row) => (
                           <InvoiceTableRow
-                          postTableData={postTableData}
-                          setOpen={setOpen}
-                          open={open}
+                            postTableData={postTableData}
+                            setOpen={setOpen}
+                            open={open}
                             key={row.id}
                             row={row}
-                            selected={selected.includes(row.id)}
-                            onSelectRow={() => onSelectRow(row.id)}
-                            onViewRow={() => handleViewRow(row.id)}
-                            onEditRow={() => handleEditRow(row.id)}
-                            onDeleteRow={() => handleDeleteRow(row.id)}
+                            selected={selected.includes(row.NodeID)}
+                            onSelectRow={() => onSelectRow(row.NodeID)}
+                            onViewRow={() => handleViewRow(row.NodeID)}
                           />
                         ))}
 
-                        <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmler.length)} />
+                        <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, atmler)} />
                       </TableBody>
                     ) : null}
                   </Table>
@@ -408,9 +391,8 @@ export default function InvoiceList() {
             </Card>
           </>
         ) : null}
-          <EditModal open={open} setOpen={setOpen}/>
+        <EditModal open={open} setOpen={setOpen} />
       </Container>
-    
     </Page>
   );
 }
@@ -425,7 +407,7 @@ function applySortFilter({
   filterService,
   filterStartDate,
   filterEndDate,
-  filteredAtmData
+  filteredAtmData,
 }) {
   const stabilizedThis = filteredAtmData?.map((el, index) => [el, index]);
 

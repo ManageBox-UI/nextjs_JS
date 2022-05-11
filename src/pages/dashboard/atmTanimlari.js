@@ -43,7 +43,7 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 import InvoiceAnalytic from '../../sections/@dashboard/atmTanimlari/InvoiceAnalytic';
 import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/atmTanimlari/list';
 import axios from 'axios';
-
+import { useEffect } from 'react';
 import useSWR from 'swr';
 // ----------------------------------------------------------------------
 
@@ -94,7 +94,9 @@ export default function AtmTanimlari() {
   const { themeStretch } = useSettings();
 
   const router = useRouter();
-
+    useEffect(()=>{
+      console.log(selected)
+    },[selected])
   const {
     dense,
     page,
@@ -342,13 +344,13 @@ export default function AtmTanimlari() {
                       <TableBody>
                         {atmler.map((row) => (
                           <InvoiceTableRow
-                            key={row.id}
-                            row={row}
-                            selected={selected.includes(row.id)}
-                            onSelectRow={() => onSelectRow(row.id)}
-                            onViewRow={() => handleViewRow(row.id)}
-                            onEditRow={() => handleEditRow(row.id)}
-                            onDeleteRow={() => handleDeleteRow(row.id)}
+                          key={row.NodeID}
+                          row={row}
+                          selected={selected === row.NodeID ? true : false}
+                          onSelectRow={onSelectRow}
+                          onViewRow={handleViewRow}
+                          onEditRow={handleEditRow}
+                          onDeleteRow={handleDeleteRow}
                           />
                         ))}
 

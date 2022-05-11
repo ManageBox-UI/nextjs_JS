@@ -24,6 +24,7 @@ export default function useTable(props) {
   };
 
   const onSelectRow = (id) => {
+    console.log(id);
     const selectedIndex = selected.indexOf(id);
 
     let newSelected = [];

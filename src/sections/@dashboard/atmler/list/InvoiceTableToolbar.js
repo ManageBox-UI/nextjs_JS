@@ -35,7 +35,7 @@ export default function InvoiceTableToolbar({
 }) {
   return (
     <Stack spacing={2} direction={{ xs: 'column', md: 'row' }} sx={{ py: 2.5, px: 3 }}>
-      <TextField
+      {/* <TextField
         fullWidth
         select
         label="Service type"
@@ -51,22 +51,8 @@ export default function InvoiceTableToolbar({
           textTransform: 'capitalize',
         }}
       >
-        {optionsService.map((option) => (
-          <MenuItem
-            key={option}
-            value={option}
-            sx={{
-              mx: 1,
-              my: 0.5,
-              borderRadius: 0.75,
-              typography: 'body2',
-              textTransform: 'capitalize',
-            }}
-          >
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
+        <></>
+      </TextField> */}
 
       {/* <DatePicker
         label="Start date"
