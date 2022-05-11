@@ -28,7 +28,7 @@ InvoiceTableRow.propTypes = {
 export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow, postTableData, setOpen, open }) {
   const theme = useTheme();
 
-  const { NodeID,Name, IsOnline, AlarmStatus, Region, City, Town } = row;
+  const { NodeID,Name, Region, City, Town,DeviceSerial,Address,Lattitude,Longitude,ManageBoxIP } = row;
   
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -47,25 +47,35 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+
         <Stack>
-          <NextLink noWrap variant="body2" href={`/dashboard/details/${NodeID}`} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
+          <NextLink noWrap variant="body2" href={`/dashboard/details/${NodeID}`} sx={{ color: 'text.disabled', cursor: 'pointer', align:"flex-start" }}>
             {NodeID}
           </NextLink>
         </Stack>
       </TableCell>
 
-      <TableCell align="left">{Name}</TableCell>
-      <TableCell align="left">{IsOnline}</TableCell>
+      <TableCell align="flex-start">{DeviceSerial}</TableCell>
+      <TableCell align="flex-start">{Name}</TableCell>
 
-      <TableCell align="left">{AlarmStatus}</TableCell>
+      <TableCell align="flex-start">{Region}</TableCell>
 
-      <TableCell align="center">{Region}</TableCell>
+      <TableCell align="flex-start">{City}</TableCell>
 
-      <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
-        {City}
-      </TableCell>
-      <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
+      <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
         {Town}
+      </TableCell>
+      <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
+        {Address}
+      </TableCell>
+      <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
+        {Lattitude}
+      </TableCell>
+      <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
+        {Longitude}
+      </TableCell>
+      <TableCell align="flex-start" sx={{ textTransform: 'capitalize' }}>
+        {ManageBoxIP}
       </TableCell>
 
       {/* <TableCell align="left">
@@ -83,7 +93,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
         </Label>
       </TableCell> */}
 
-      {/* <TableCell align="right">
+      <TableCell align="right">
         <TableMoreMenu
           open={openMenu}
           onOpen={handleOpenMenu}
@@ -120,7 +130,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
             </>
           }
         />
-      </TableCell> */}
+      </TableCell>
     </TableRow>
   );
 }

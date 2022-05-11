@@ -1,47 +1,11 @@
-import PropTypes from 'prop-types';
-import { forwardRef } from 'react';
-// next
-import NextLink from 'next/link';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Box } from '@mui/material';
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="2153.000000pt" height="763.000000pt" viewBox="0 0 2153.000000 763.000000"
+ preserveAspectRatio="xMidYMid meet">
 
-// ----------------------------------------------------------------------
-
-const Logo = forwardRef(({ disabledLink = false, sx }, ref) => {
-  const theme = useTheme();
-
-  const PRIMARY_LIGHT = theme.palette.primary.light;
-
-  const PRIMARY_MAIN = theme.palette.primary.main;
-
-  const PRIMARY_DARK = theme.palette.primary.dark;
-
-  // OR
-  // const logo = '/logo/logo_single.svg';
-  // <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 512 512">
-
-  const logo = (
-    <Box ref={ref} sx={{ width: 130, height: 130, cursor: 'pointer', ...sx }}>
-      <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="100%" height="100%" viewBox="0 0 2153.000000 763.000000"
- >
-        <defs>
-          <linearGradient id="BG1" x1="100%" x2="50%" y1="9.946%" y2="50%">
-            <stop offset="0%" stopColor={PRIMARY_DARK} />
-            <stop offset="100%" stopColor={PRIMARY_MAIN} />
-          </linearGradient>
-          <linearGradient id="BG2" x1="50%" x2="50%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor={PRIMARY_LIGHT} />
-            <stop offset="100%" stopColor={PRIMARY_MAIN} />
-          </linearGradient>
-          <linearGradient id="BG3" x1="50%" x2="50%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor={PRIMARY_LIGHT} />
-            <stop offset="100%" stopColor={PRIMARY_MAIN} />
-          </linearGradient>
-        </defs>
-
-        <g transform="translate(0.000000,763.000000) scale(0.100000,-0.100000)"
+<g transform="translate(0.000000,763.000000) scale(0.100000,-0.100000)"
 fill="#000000" stroke="none">
 <path d="M18820 7610 c-45 -18 -100 -63 -100 -82 0 -8 -4 -18 -8 -23 -5 -6
 -19 -39 -32 -75 -13 -36 -27 -69 -32 -74 -4 -6 -8 -18 -8 -28 0 -10 -4 -18 -8
@@ -239,20 +203,4 @@ m326 -51 c-13 -2 -33 -2 -45 0 -13 2 -3 4 22 4 25 0 35 -2 23 -4z m17 -53 c0
 -15 -25 0 -15 -7 -19 -40 -19 -29 0 -40 -4 -40 -15 0 -12 -20 -15 -117 -15
 l-118 0 0 150 0 150 118 0 c67 0 117 -4 117 -10z"/>
 </g>
-      </svg>
-    </Box>
-  );
-
-  if (disabledLink) {
-    return <>{logo}</>;
-  }
-
-  return <NextLink href="/">{logo}</NextLink>;
-});
-
-Logo.propTypes = {
-  disabledLink: PropTypes.bool,
-  sx: PropTypes.object,
-};
-
-export default Logo;
+</svg>

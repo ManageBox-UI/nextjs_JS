@@ -73,14 +73,14 @@ export default function Login() {
       <RootStyle>
         <HeaderStyle>
           <Logo />
-          {smUp && (
+          {/* {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
               Don’t have an account? {''}
               <NextLink href={PATH_AUTH.register} passHref>
                 <Link variant="subtitle2">Get started</Link>
               </NextLink>
             </Typography>
-          )}
+          )} */}
         </HeaderStyle>
 
         {mdUp && (
@@ -97,7 +97,7 @@ export default function Login() {
             <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="h4" gutterBottom>
-                  Sign in to Minimal
+                  Oturum Açın
                 </Typography>
                 <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
               </Box>
@@ -120,14 +120,14 @@ export default function Login() {
 
             <LoginForm />
 
-            {!smUp && (
+            {/* {!smUp && (
               <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                 Don’t have an account?{' '}
                 <NextLink href={PATH_AUTH.register} passHref>
                   <Link variant="subtitle2">Get started</Link>
                 </NextLink>
               </Typography>
-            )}
+            )} */}
           </ContentStyle>
         </Container>
       </RootStyle>

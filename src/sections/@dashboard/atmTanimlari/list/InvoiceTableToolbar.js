@@ -102,7 +102,7 @@ export default function InvoiceTableToolbar({
         fullWidth
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        placeholder="Atm adı veya Atm kodu girin.."
+        placeholder="Atm kodu veya atm adı girin"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

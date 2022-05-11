@@ -68,11 +68,11 @@ export default function LoginForm() {
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
-        <RHFTextField name="userName" label="Username" />
+        <RHFTextField name="userName" label="Kullanıcı Adı" />
 
         <RHFTextField
           name="password"
-          label="Password"
+          label="Şifre"
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -87,14 +87,14 @@ export default function LoginForm() {
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <RHFCheckbox name="remember" label="Remember me" />
+        {/* <RHFCheckbox name="remember" label="Beni hatırla" />
         <NextLink href={PATH_AUTH.resetPassword} passHref>
-          <Link variant="subtitle2">Forgot password?</Link>
-        </NextLink>
+          <Link variant="subtitle2">Parolanızı mı unuttunuz?</Link>
+        </NextLink> */}
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-        Login
+      Giriş yap
       </LoadingButton>
     </FormProvider>
   );

@@ -34,7 +34,7 @@ export default function VerifyCode() {
       <Container>
         <ContentStyle sx={{ textAlign: 'center' }}>
           <Typography variant="h3" paragraph>
-            Please check your email!
+            Lütfen e-mailinizi kontrol edin!
           </Typography>
 
           <Typography sx={{ color: 'text.secondary' }}>

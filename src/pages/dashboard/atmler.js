@@ -45,6 +45,7 @@ import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/
 import axios from 'axios';
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import EditModal from '../../components/EditModal';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -64,7 +65,6 @@ const TABLE_HEAD = [
   { id: 'sent', label: 'Bölge', align: 'center', width: 140 },
   { id: 'status', label: 'İl', align: 'left' },
   { id: 'status', label: 'İlçe', align: 'left' },
-  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -111,11 +111,16 @@ export default function InvoiceList() {
 
   const [filterName, setFilterName] = useState('');
 
+  const [search, setSearch] = useState('');
+
+  const [open, setOpen] = useState(false);
   const [filterService, setFilterService] = useState('all');
 
   const [filterStartDate, setFilterStartDate] = useState(null);
 
   const [filterEndDate, setFilterEndDate] = useState(null);
+
+  const [filteredAtmData, setFilteredAtmData] = useState([]);
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
@@ -148,6 +153,7 @@ export default function InvoiceList() {
 
   const dataFiltered = applySortFilter({
     atmler,
+    filteredAtmData,
     comparator: getComparator(order, orderBy),
     filterName,
     filterService,
@@ -158,36 +164,63 @@ export default function InvoiceList() {
 
   const denseHeight = dense ? 56 : 76;
 
-  const getLengthByStatus = (status) => atmler?.filter((item) => item.status === status).length;
+  const getLengthByStatus = (status) => filteredAtmData?.filter((item) => item.status === status).length;
 
   const getTotalPriceByStatus = (status) =>
     sumBy(
-      atmler?.filter((item) => item.status === status),
+      filteredAtmData?.filter((item) => item.status === status),
       'totalPrice'
     );
 
-  const getPercentByStatus = (status) => (getLengthByStatus(status) / atmler.length) * 100;
+  const getPercentByStatus = (status) => (getLengthByStatus(status) / filteredAtmData.length) * 100;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: atmler?.length },
+    { value: 'all', label: 'All', color: 'info', count: filteredAtmData?.length },
     { value: 'paid', label: 'Çevirimiçi', color: 'success', count: getLengthByStatus('paid') },
     { value: 'unpaid', label: 'Kurulmamış', color: 'warning', count: getLengthByStatus('unpaid') },
     { value: 'overdue', label: 'Çevirimdışı', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    
   ];
-
+  useEffect(()=>{
+    const filteredAtm = atmler?.filter((row)=>{
+      if(!search){
+        return row;
+      }
+      if(search && row.Name.includes(search)){
+        return row;
+      }
+    })
+    setFilteredAtmData(filteredAtm)
+  },[search])
+  const getActives = () =>{
+    const actives = filteredAtmData.filter((row)=>{if(row.IsActive !== 1){return row}})
+    return actives.length;
+  }
+  const postTableData = (id) =>{
+    console.log(id);
+    return;
+    axios.post('https://13.79.156.47:8002/services/EditTable', {
+      TableID:id,
+      OP:opData ,
+      data: editData
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
   return (
-    <Page title="Invoice: List">
+    <Page title="Atm: Atmler">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="ATMLER "
           links={[
-            { name: 'Atm Özet Ekranı', href: PATH_DASHBOARD.root },
-            { name: 'Invoices', href: PATH_DASHBOARD.invoice.root },
-            { name: 'List' },
+            <></>
           ]}
         />
-        {atmler ? (
+        {filteredAtmData ? (
           <>
             <Card sx={{ mb: 5 }}>
               <Scrollbar>
@@ -198,16 +231,16 @@ export default function InvoiceList() {
                 >
                   <InvoiceAnalytic
                     title="Total"
-                    total={atmler.length}
+                    total={filteredAtmData.length}
                     percent={100}
-                    price={sumBy(atmler, 'totalPrice')}
+                    price={sumBy(filteredAtmData, 'totalPrice')}
                     icon="ic:round-receipt"
                     color={theme.palette.info.main}
                   />
                   <InvoiceAnalytic
                     title="Çevirimiçi"
-                    total={getLengthByStatus(atmler.IsActive)}
-                    percent={getPercentByStatus(atmler.IsActive)}
+                    total={getActives()}
+                    percent={getPercentByStatus(filteredAtmData.IsActive)}
                     price={getTotalPriceByStatus('paid')}
                     icon="eva:checkmark-circle-2-fill"
                     color={theme.palette.success.main}
@@ -259,6 +292,8 @@ export default function InvoiceList() {
                 filterService={filterService}
                 filterStartDate={filterStartDate}
                 filterEndDate={filterEndDate}
+                setSearch={setSearch}
+                search={search}
                 onFilterName={handleFilterName}
                 onFilterService={handleFilterService}
                 onFilterStartDate={(newValue) => {
@@ -276,11 +311,11 @@ export default function InvoiceList() {
                     <TableSelectedActions
                       dense={dense}
                       numSelected={selected.length}
-                      rowCount={atmler.length}
+                      rowCount={filteredAtmData.length}
                       onSelectAllRows={(checked) =>
                         onSelectAllRows(
                           checked,
-                          atmler.map((row) => row.id)
+                          filteredAtmData.map((row) => row.id)
                         )
                       }
                       actions={
@@ -297,15 +332,15 @@ export default function InvoiceList() {
                             </IconButton>
                           </Tooltip>
                           
-                          <Tooltip title="Güncelle">
+                          <Tooltip title="Copy">
                             <IconButton color="primary">
                               <Iconify icon={'clarity:update-line'} />
                             </IconButton>
                           </Tooltip>
 
-                          <Tooltip title="Sil">
-                            <IconButton color="error" onClick={() => handleDeleteRows(selected)}>
-                              <Iconify icon={'eva:trash-2-outline'} />
+                          <Tooltip title="Yazdır">
+                            <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
+                              <Iconify icon={'cil:print'} />
                             </IconButton>
                           </Tooltip>
                         </Stack>
@@ -318,21 +353,25 @@ export default function InvoiceList() {
                       order={order}
                       orderBy={orderBy}
                       headLabel={TABLE_HEAD}
-                      rowCount={atmler.length}
+                      rowCount={filteredAtmData.length}
                       numSelected={selected.length}
                       onSort={onSort}
                       onSelectAllRows={(checked) =>
                         onSelectAllRows(
                           checked,
-                          atmler.map((row) => row.id)
+                          filteredAtmData.map((row) => row.id)
                         )
                       }
                     />
 
-                    {atmler ? (
+                    {filteredAtmData ? (
                       <TableBody>
-                        {atmler.map((row) => (
+                        {
+                    filteredAtmData?.map((row) => (
                           <InvoiceTableRow
+                          postTableData={postTableData}
+                          setOpen={setOpen}
+                          open={open}
                             key={row.id}
                             row={row}
                             selected={selected.includes(row.id)}
@@ -370,7 +409,9 @@ export default function InvoiceList() {
             </Card>
           </>
         ) : null}
+          <EditModal open={open} setOpen={setOpen}/>
       </Container>
+    
     </Page>
   );
 }
@@ -385,8 +426,9 @@ function applySortFilter({
   filterService,
   filterStartDate,
   filterEndDate,
+  filteredAtmData
 }) {
-  const stabilizedThis = atmler?.map((el, index) => [el, index]);
+  const stabilizedThis = filteredAtmData?.map((el, index) => [el, index]);
 
   stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);

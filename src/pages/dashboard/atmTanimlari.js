@@ -40,8 +40,8 @@ import Scrollbar from '../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 // sections
-import InvoiceAnalytic from '../../sections/@dashboard/atmler/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/atmler/list';
+import InvoiceAnalytic from '../../sections/@dashboard/atmTanimlari/InvoiceAnalytic';
+import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/atmTanimlari/list';
 import axios from 'axios';
 import { useEffect } from 'react';
 import useSWR from 'swr';
@@ -58,12 +58,15 @@ const SERVICE_OPTIONS = [
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Atm Kodu', align: 'left' },
-  { id: 'createDate', label: 'Atm Adı', align: 'left' },
-  { id: 'dueDate', label: 'İzleme Durumu', align: 'left' },
-  { id: 'price', label: 'Alarm', align: 'center', width: 140 },
-  { id: 'sent', label: 'Bölge', align: 'center', width: 140 },
-  { id: 'status', label: 'İl', align: 'left' },
+  { id: 'createDate', label: 'Cihaz Seri No', align: 'left' },
+  { id: 'dueDate', label: 'Atm Adı', align: 'left' },
+  { id: 'price', label: 'Bölge', align: 'center', width: 140 },
+  { id: 'sent', label: 'İl', align: 'center', width: 140 },
   { id: 'status', label: 'İlçe', align: 'left' },
+  { id: 'status', label: 'Adres', align: 'left' },
+  { id: 'status', label: 'Enlem', align: 'left' },
+  { id: 'status', label: 'Boylam', align: 'left' },
+  { id: 'status', label: 'MBX IP', align: 'left' },
   { id: '' },
 ];
 
@@ -175,7 +178,6 @@ export default function AtmTanimlari() {
     { value: 'paid', label: 'Çevirimiçi', color: 'success', count: getLengthByStatus('paid') },
     { value: 'unpaid', label: 'Kurulmamış', color: 'warning', count: getLengthByStatus('unpaid') },
     { value: 'overdue', label: 'Çevirimdışı', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -184,10 +186,15 @@ export default function AtmTanimlari() {
         <HeaderBreadcrumbs
           heading="ATMLER "
           links={[
-            { name: 'Atm Özet Ekranı', href: PATH_DASHBOARD.root },
-            { name: 'Invoices', href: PATH_DASHBOARD.invoice.root },
-            { name: 'List' },
+           <></>
           ]}
+          action={
+            <NextLink href={PATH_DASHBOARD.invoice.new} passHref>
+              <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />}>
+                ATM ekle
+              </Button>
+            </NextLink>
+          }
         />
         {atmler ? (
           <>

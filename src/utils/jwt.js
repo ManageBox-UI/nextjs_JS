@@ -30,7 +30,7 @@ const handleTokenExpired = (exp) => {
 
   expiredTimer = setTimeout(() => {
     // eslint-disable-next-line no-alert
-    alert('Token expired');
+    alert('Oturumun süresi doldu.');
 
     localStorage.removeItem('accessToken');
 

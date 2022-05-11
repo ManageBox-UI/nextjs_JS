@@ -34,17 +34,17 @@ UnderDevelopment.getLayout = function getLayout(page) {
 
 export default function UnderDevelopment() {
   return (
-    <Page title="500 Internal Server Error">
+    <Page title="Geliştirilmeye devam ediyor">
       <Container component={MotionContainer}>
         <ContentStyle sx={{ textAlign: 'center', alignItems: 'center' }}>
           <m.div variants={varBounce().in}>
             <Typography variant="h3" paragraph>
-              500 Internal Server Error
+GELİŞTİRİLİYOR
             </Typography>
           </m.div>
 
           <m.div variants={varBounce().in}>
-            <Typography sx={{ color: 'text.secondary' }}>There was an error, please try again later.</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>Bu sayfa yapım aşamasındadır.</Typography>
           </m.div>
 
           <m.div variants={varBounce().in}>

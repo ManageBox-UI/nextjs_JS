@@ -241,19 +241,6 @@ export default function GeneralApp() {
             />
           </Grid> */}
 
-          <Grid item xs={12} lg={14}>
-            <AppNewInvoice
-              title="New Invoice"
-              tableData={_appInvoices}
-              tableLabels={[
-                { id: 'id', label: 'Invoice ID' },
-                { id: 'category', label: 'Category' },
-                { id: 'price', label: 'Price' },
-                { id: 'status', label: 'Status' },
-                { id: '' },
-              ]}
-            />
-          </Grid>
 
           {/* <Grid item xs={12} md={6} lg={4}>
             <AppTopRelated title="Top Related Applications" list={_appRelated} />

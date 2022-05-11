@@ -76,22 +76,22 @@ export default function Login() {
         <RootStyle>
           <HeaderStyle>
             <Logo />
-            {smUp && (
+            {/* {smUp && (
               <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-                Don’t have an account? {''}
+                Hesabınız yok mu? {''}
                 <NextLink href={PATH_AUTH.register} passHref>
-                  <Link variant="subtitle2">Get started</Link>
+                  <Link variant="subtitle2">Kaydol</Link>
                 </NextLink>
               </Typography>
-            )}
+            )} */}
           </HeaderStyle>
 
           {mdUp && (
             <SectionStyle>
               <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-                Hi, Welcome Back
+               Merhaba, Hoşgeldiniz.
               </Typography>
-              <Image visibleByDefault disabledEffect src="/assets/illustrations/illustration_login.png" alt="login" />
+              {/* <Image visibleByDefault disabledEffect src="/assets/illustrations/illustration_login.png" alt="login" /> */}
             </SectionStyle>
           )}
 
@@ -100,37 +100,37 @@ export default function Login() {
               <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
                 <Box sx={{ flexGrow: 1 }}>
                   <Typography variant="h4" gutterBottom>
-                    Sign in to Minimal
+                    ManageBox'da Oturum Açın
                   </Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>Bilgilerinizi girin.</Typography>
                 </Box>
 
                 <Tooltip title={capitalCase(method)} placement="right">
                   <>
-                    <Image
+                    {/* <Image
                       disabledEffect
                       alt={method}
                       src={`https://minimal-assets-api-dev.vercel.app/assets/icons/auth/ic_${method}.png`}
                       sx={{ width: 32, height: 32 }}
-                    />
+                    /> */}
                   </>
                 </Tooltip>
               </Stack>
 
-              <Alert severity="info" sx={{ mb: 3 }}>
-                Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
-              </Alert>
+              {/* <Alert severity="info" sx={{ mb: 3 }}>
+               Deneme : <strong>"</strong> / password :<strong>"</strong>
+              </Alert> */}
 
               <LoginForm />
 
-              {!smUp && (
+              {/* {!smUp && (
                 <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                  Don’t have an account?{' '}
+                 Hesabınız yok mu?{' '}
                   <NextLink href={PATH_AUTH.register} passHref>
-                    <Link variant="subtitle2">Get started</Link>
+                    <Link variant="subtitle2">Kaydol</Link>
                   </NextLink>
                 </Typography>
-              )}
+              )} */}
             </ContentStyle>
           </Container>
         </RootStyle>

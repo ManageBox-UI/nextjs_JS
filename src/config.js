@@ -1,5 +1,5 @@
 // @mui
-import { enUS, frFR, zhCN, viVN, arSD, trTR } from '@mui/material/locale';
+import { enUS, trTR } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from './routes/paths';
 
