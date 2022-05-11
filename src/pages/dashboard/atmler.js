@@ -199,21 +199,21 @@ export default function InvoiceList() {
   const postTableData = (id) =>{
     console.log(id);
     return;
-    axios.post('https://13.79.156.47:8002/services/EditTable', {
-      TableID:id,
-      OP:opData ,
-      data: editData
-    })
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    // axios.post('https://13.79.156.47:8002/services/EditTable', {
+    //   TableID:id,
+    //   OP:opData ,
+    //   data: editData
+    // })
+    // .then(function (response) {
+    //   console.log(response);
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
   }
   return (
     <Page title="Atm: Atmler">
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : 'xlg'}>
         <HeaderBreadcrumbs
           heading="ATMLER "
           links={[
