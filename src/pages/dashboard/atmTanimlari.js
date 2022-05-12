@@ -269,8 +269,7 @@ export default function AtmTanimlari() {
               />
 
               <Scrollbar>
-                <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-                <Stack spacing={1} direction="row">
+                 <Stack spacing={1} direction="row">
                           <Tooltip title="CSV">
                             <IconButton color="primary">
                               <Iconify icon={'bi:filetype-csv'} />
@@ -283,7 +282,7 @@ export default function AtmTanimlari() {
                               <Iconify icon={'codicon:file-pdf'} />
                             </IconButton>
                           </Tooltip>
-                          <Tooltip title="Ekle">
+                          <Tooltip title="Ekle" onClick={open}>
                             <IconButton color="primary">
                               <Iconify icon={'carbon:add'} />
                               <EditModal open={open} setOpen={setOpen} />
@@ -302,6 +301,8 @@ export default function AtmTanimlari() {
                             </IconButton>
                           </Tooltip>
                         </Stack>
+                <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
+               
                   {selected.length > 0 && (
                     <TableSelectedActions
                       dense={dense}
@@ -361,9 +362,9 @@ export default function AtmTanimlari() {
 
               <Box sx={{ position: 'relative' }}>
                 <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
+                  rowsPerPageOptions={[10,20,30,40,50,60,70,80,90,100,120,140]}
                   component="div"
-                  count={dataFiltered.length}
+                  count={atmTanimlari.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={onChangePage}
@@ -422,12 +423,6 @@ function applySortFilter({
     atmTanimlari = atmTanimlari?.filter((item) => item.items.some((c) => c.service === filterService));
   }
 
-  if (filterStartDate && filterEndDate) {
-    atmTanimlari = atmTanimlari?.filter(
-      (item) =>
-        item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
-    );
-  }
 
   return atmTanimlari;
 }

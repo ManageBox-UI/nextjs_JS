@@ -82,6 +82,13 @@ export default function GeneralApp() {
     'https://13.79.156.47:8002/services/GetReportTable?TableID=AtmLer',
     fetcher
   );
+  const { data: alarmDurumlari, error: alarmDurumlariError } = useSWR(
+    'https://13.79.156.47:8002/services/GetNodeStatusWidget?WidgetId=AlarmDurumlari',
+    fetcher
+  );
+  
+  console.log("deneme"+alarmDurumlari)
+
   useEffect(() => {
      console.log(localStorage.getItem('accessToken'));
    }, [localStorage.getItem('accessToken')]);
@@ -169,6 +176,7 @@ export default function GeneralApp() {
                   theme.palette.chart.blue[0],
                   theme.palette.chart.violet[0],
                   theme.palette.chart.yellow[0],
+                  
                 ]}
               />
             </Grid>
